@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.estacionamento.dto.DadosListagemVagaDTO;
 import br.com.api.estacionamento.dto.DadosVagaDTO;
-import br.com.api.estacionamento.model.Vaga;
 import br.com.api.estacionamento.repository.VagaRepository;
+import br.com.api.estacionamento.service.VagaService;
 
 import java.util.List;
 
@@ -23,11 +23,14 @@ public class VagaController {
 
     @Autowired
     private VagaRepository vagaRepository;
+
+    @Autowired
+    private VagaService vagaService;
     
     @PostMapping
     public void cadastrarVaga(@RequestBody DadosVagaDTO dados) {
         
-        vagaRepository.save(new Vaga(dados));
+        vagaService.salvarVaga(dados);
     }
 
     @GetMapping

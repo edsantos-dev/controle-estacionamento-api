@@ -30,7 +30,7 @@ public class Vaga {
 
     public Vaga(DadosVagaDTO dados) {
         this.numero = dados.numero();
-        this.status = dados.status();
+        this.status = true;
     }
 
 }
