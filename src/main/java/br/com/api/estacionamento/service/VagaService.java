@@ -14,13 +14,13 @@ public class VagaService {
     @Autowired
     private VagaRepository vagaRepository;
     
-    public void salvarVaga(DadosVagaDTO dados) {
+    public Vaga salvarVaga(DadosVagaDTO dados) {
 
         if (vagaRepository.existsByNumero(dados.numero())) {
             throw new RegraNegocioException("Vaga ja cadastrada");
         }
 
-        vagaRepository.save(new Vaga(dados));
+        return vagaRepository.save(new Vaga(dados));
         
 
         

@@ -1,8 +1,11 @@
 package br.com.api.estacionamento.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public record DadosVagaDTO(
 
-    int numero
+    @NotNull
+    Integer numero
 
 ) {
 
