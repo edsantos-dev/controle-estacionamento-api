@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 
@@ -46,6 +48,15 @@ public class VagaController {
         
         return ResponseEntity.ok().body(listaVaga); 
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosDetalhamentoVagaDTO> listarVagaPorId(@PathVariable long id) {
+        
+        var vaga = vagaService.listarPorId(id);
+
+        return ResponseEntity.ok(vaga);
+    }
+    
     
     
 }
