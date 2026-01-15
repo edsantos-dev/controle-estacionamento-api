@@ -12,6 +12,7 @@ import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
 import br.com.api.estacionamento.model.Vaga;
 import br.com.api.estacionamento.repository.VagaRepository;
+import lombok.var;
 
 @Service
 public class VagaService {
@@ -38,6 +39,37 @@ public class VagaService {
         .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
 
         return new DadosDetalhamentoVagaDTO(vagaId);
+    }
+
+    public DadosDetalhamentoVagaDTO ocuparVaga(Long id){
+
+        var vaga = vagaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
+
+        if (!vaga.isStatus()) {
+            throw new RegraNegocioException("Vaga ja ocupada");
+        }
+
+        vaga.setStatus(false);
+        vagaRepository.save(vaga);
+
+        return new DadosDetalhamentoVagaDTO(vaga);
+
+    }
+
+    public DadosDetalhamentoVagaDTO liberarVaga(Long id){
+
+        var vaga = vagaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
+
+        if (vaga.isStatus()) {
+            throw new RegraNegocioException("Vaga ja esta vazia.");
+        }
+
+        vaga.setStatus(true);
+        vagaRepository.save(vaga);
+
+        return new DadosDetalhamentoVagaDTO(vaga);
     }
         
 }

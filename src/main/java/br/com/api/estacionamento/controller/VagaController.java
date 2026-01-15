@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -57,6 +58,22 @@ public class VagaController {
         return ResponseEntity.ok(vaga);
     }
     
+    @PatchMapping("{id}/ocupar")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoVagaDTO> ocuparVaga(@PathVariable Long id){
+
+        var vaga = vagaService.ocuparVaga(id);
+
+        return ResponseEntity.ok(vaga);
+    }
     
+    @PatchMapping("{id}/liberar")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoVagaDTO> liberarVaga(@PathVariable Long id){
+
+        var vaga = vagaService.liberarVaga(id);
+
+        return ResponseEntity.ok(vaga);
+    }
     
 }
