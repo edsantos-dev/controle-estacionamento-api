@@ -71,5 +71,17 @@ public class VagaService {
 
         return new DadosDetalhamentoVagaDTO(vaga);
     }
+
+    public void deletarVaga(Long id){
+
+        var vaga = vagaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
+
+        if(!vaga.isStatus()){
+            throw new RegraNegocioException("Nao eh possivel deletar a vaga que esta ocupada");
+        }
+
+        vagaRepository.delete(vaga);
+    }
         
 }
