@@ -75,6 +75,32 @@ O projeto segue uma organização em camadas, separando responsabilidades:
   | PATCH  | /vagas/{id}/liberar | Marca a vaga como livre   |
   | DELETE | /vagas/{id}         | Remove uma vaga livre     |
 
+  ### Veículo
+
+   * Cadastrar veículo
+   * Buscar veículo por ID
+   * Atualizar o tipo de veículo
+
+   ### Regras de Negócio (Veículo)
+
+   * A placa do veículo é única
+   * Não é possível alterar a placa
+   * O veículo não possui estado (não está ocupado, livre, estacionado, etc.)
+   * O veículo não controla tempo, entrada, saída ou pagamento
+   * Não é permitido:
+
+      * Cadastrar dois veículos com a mesma placa
+      * Atualizar a placa
+      * Remover um veículo
+
+   ### Endpoints – Veículo
+
+   | Método | Endpoint               | Descrição                               |
+   | ------ | ---------------------- | --------------------------------------- |
+   | POST   | /veiculos              | Cadastra um novo veículo                |
+   | GET    | /veiculos/{id}         | Busca veículo por ID                    |
+   | PATCH  | /veiculos/{id}         | Altera o tipo do veículo                |
+
 
 
 ## Tratamento de Erros
@@ -114,7 +140,7 @@ git clone https://github.com/edsantos-dev/controle-estacionamento-api.git
 2. **Crie o banco de dados no MySQL**
 
 ```sql
-CREATE DATABASE estacionamento;
+CREATE DATABASE estacionamento_api;
 ```
 
 3. **Configure o arquivo `application.properties`**
@@ -122,12 +148,13 @@ CREATE DATABASE estacionamento;
    Ajuste as credenciais de acesso ao banco de dados conforme seu ambiente:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost/estacionamento
+spring.datasource.url=jdbc:mysql://localhost/estacionamento_api
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 ```
 
 4. **Execute a aplicação**
+
    Você pode executar o projeto pela IDE ou via terminal:
 
 ```bash
@@ -142,11 +169,11 @@ mvn spring-boot:run
 
 ## Evoluções Futuras
 
-* Implementação da entidade **Veículo**
-* Associação entre Veículo e Vaga
-* Histórico de ocupação de vagas
-* Exclusão lógica para fins de auditoria
-* Paginação e ordenação de resultados
+* Modelagem da entidade **Estadia**
+* Vincular Veículo e Vaga através da Estadia
+* Cálculo de tempo estacionado
+* Simulação de cobrança
+* Relatórios e histórico
 
 
 
