@@ -9,7 +9,7 @@ public record DadosDetalhamentoVagaDTO(
 ) {
 
     public DadosDetalhamentoVagaDTO(Vaga vaga) {
-        this(vaga.getId(), vaga.getNumero(), vaga.isStatus());
+        this(vaga.getId(), vaga.getNumero(), vaga.isOcupada());
     }
 
 }

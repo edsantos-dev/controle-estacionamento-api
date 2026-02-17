@@ -1,6 +1,7 @@
 package br.com.api.estacionamento.model;
 
 import br.com.api.estacionamento.dto.DadosVagaDTO;
+import br.com.api.estacionamento.exception.RegraNegocioException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,11 +27,27 @@ public class Vaga {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int numero;
-    private boolean status;
+    private boolean ocupada;
 
     public Vaga(DadosVagaDTO dados) {
         this.numero = dados.numero();
-        this.status = true;
+        this.ocupada = false;
+    }
+
+    public void ocupar(){
+        if(this.ocupada){
+            throw new RegraNegocioException("Vaga já está ocupada.");
+        }
+
+        this.ocupada = true;
+    }
+
+    public void liberar(){
+        if(!this.ocupada){
+            throw new RegraNegocioException("Vaga já está livre.");
+        }
+
+        this.ocupada = false;
     }
 
 }

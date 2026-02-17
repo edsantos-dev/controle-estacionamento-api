@@ -46,11 +46,7 @@ public class VagaService {
         var vaga = vagaRepository.findById(id)
         .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
 
-        if (!vaga.isStatus()) {
-            throw new RegraNegocioException("Vaga ja ocupada");
-        }
-
-        vaga.setStatus(false);
+        vaga.ocupar();
         vagaRepository.save(vaga);
 
         return new DadosDetalhamentoVagaDTO(vaga);
@@ -62,11 +58,7 @@ public class VagaService {
         var vaga = vagaRepository.findById(id)
         .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
 
-        if (vaga.isStatus()) {
-            throw new RegraNegocioException("Vaga ja esta vazia.");
-        }
-
-        vaga.setStatus(true);
+        vaga.liberar();
         vagaRepository.save(vaga);
 
         return new DadosDetalhamentoVagaDTO(vaga);
@@ -77,7 +69,7 @@ public class VagaService {
         var vaga = vagaRepository.findById(id)
         .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
 
-        if(!vaga.isStatus()){
+        if(!vaga.isOcupada()){
             throw new RegraNegocioException("Nao eh possivel deletar a vaga que esta ocupada");
         }
 
