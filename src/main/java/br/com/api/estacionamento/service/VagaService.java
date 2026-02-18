@@ -20,13 +20,15 @@ public class VagaService {
     @Autowired
     private VagaRepository vagaRepository;
     
-    public Vaga salvarVaga(DadosVagaDTO dados) {
+    public DadosDetalhamentoVagaDTO salvarVaga(DadosVagaDTO dados) {
 
         if (vagaRepository.existsByNumero(dados.numero())) {
             throw new RegraNegocioException("Vaga já cadastrada.");
         }
 
-        return vagaRepository.save(new Vaga(dados));
+        var vaga = vagaRepository.save(new Vaga(dados));
+
+        return new DadosDetalhamentoVagaDTO(vaga);
     }
 
     public List<DadosListagemVagaDTO> listarVagas(){

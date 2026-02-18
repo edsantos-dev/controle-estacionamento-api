@@ -38,9 +38,9 @@ public class VagaController {
     public ResponseEntity<DadosDetalhamentoVagaDTO> cadastrarVaga(@RequestBody @Valid DadosVagaDTO dados, UriComponentsBuilder uriBuilder) {
         
         var vaga = vagaService.salvarVaga(dados);
-        var uri = uriBuilder.path("/vagas/{id}").buildAndExpand(vaga.getId()).toUri();
+        var uri = uriBuilder.path("/vagas/{id}").buildAndExpand(vaga.id()).toUri();
 
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoVagaDTO(vaga));
+        return ResponseEntity.created(uri).body(vaga);
     }
 
     @GetMapping
