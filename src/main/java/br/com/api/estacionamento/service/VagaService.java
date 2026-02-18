@@ -23,7 +23,7 @@ public class VagaService {
     public Vaga salvarVaga(DadosVagaDTO dados) {
 
         if (vagaRepository.existsByNumero(dados.numero())) {
-            throw new RegraNegocioException("Vaga ja cadastrada");
+            throw new RegraNegocioException("Vaga já cadastrada.");
         }
 
         return vagaRepository.save(new Vaga(dados));
@@ -36,7 +36,7 @@ public class VagaService {
     public DadosDetalhamentoVagaDTO listarPorId (Long id) {
 
         var vagaId = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
 
         return new DadosDetalhamentoVagaDTO(vagaId);
     }
@@ -44,7 +44,7 @@ public class VagaService {
     public DadosDetalhamentoVagaDTO ocuparVaga(Long id){
 
         var vaga = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
 
         vaga.ocupar();
         vagaRepository.save(vaga);
@@ -56,7 +56,7 @@ public class VagaService {
     public DadosDetalhamentoVagaDTO liberarVaga(Long id){
 
         var vaga = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
 
         vaga.liberar();
         vagaRepository.save(vaga);
@@ -67,10 +67,10 @@ public class VagaService {
     public void deletarVaga(Long id){
 
         var vaga = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga nao encontrada"));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
 
         if(!vaga.isOcupada()){
-            throw new RegraNegocioException("Nao eh possivel deletar a vaga que esta ocupada");
+            throw new RegraNegocioException("Não é possível deletar uma vaga que está ocupada.");
         }
 
         vagaRepository.delete(vaga);

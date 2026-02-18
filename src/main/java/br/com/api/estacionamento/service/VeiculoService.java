@@ -20,7 +20,7 @@ public class VeiculoService {
     public DadosDetalhamentoVeiculoDTO cadastrarVeiculo(DadosVeiculoDTO dados){
 
         if(veiculoRepository.existsByPlaca(dados.placa().trim().toUpperCase())){
-            throw new RegraNegocioException("O veiculo ja esta cadastrado");
+            throw new RegraNegocioException("O veículo já está cadastrado.");
         }
 
         var veiculo = veiculoRepository.save(new Veiculo(dados));
@@ -32,7 +32,7 @@ public class VeiculoService {
     public DadosDetalhamentoVeiculoDTO listarVeiculoPorID(Long id){
 
         var veiculoId = veiculoRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Veiculo nao encontrado"));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
 
         return new DadosDetalhamentoVeiculoDTO(veiculoId);
 
@@ -41,7 +41,7 @@ public class VeiculoService {
     public DadosDetalhamentoVeiculoDTO editarVeiculo(Long id, DadosEdicaoVeiculoDTO dados){
 
         var veiculoId = veiculoRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Veiculo nao encontrado"));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
 
         veiculoId.setTipo(dados.tipo());
         veiculoRepository.save(veiculoId);
