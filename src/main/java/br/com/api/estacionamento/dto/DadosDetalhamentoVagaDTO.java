@@ -5,7 +5,7 @@ import br.com.api.estacionamento.model.Vaga;
 public record DadosDetalhamentoVagaDTO(
     Long id,
     int numero,
-    boolean status
+    boolean ocupada
 ) {
 
     public DadosDetalhamentoVagaDTO(Vaga vaga) {
