@@ -31,7 +31,6 @@ public class VeiculoController {
     private VeiculoService veiculoService;
 
     @PostMapping
-    @Transactional
     public ResponseEntity<DadosDetalhamentoVeiculoDTO> cadastrarVeiculo(@RequestBody @Valid DadosVeiculoDTO dados, UriComponentsBuilder uriBuilder) {
         
         var veiculo = veiculoService.cadastrarVeiculo(dados);
@@ -57,7 +56,6 @@ public class VeiculoController {
     }
 
     @PatchMapping("/{id}")
-    @Transactional
     public ResponseEntity<DadosDetalhamentoVeiculoDTO> editarVeiculo(@PathVariable Long id, @RequestBody @Valid DadosEdicaoVeiculoDTO dados){
 
         var veiculo = veiculoService.editarVeiculo(id, dados);

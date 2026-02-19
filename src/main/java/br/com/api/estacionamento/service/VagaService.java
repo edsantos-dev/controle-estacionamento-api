@@ -12,9 +12,11 @@ import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
 import br.com.api.estacionamento.model.Vaga;
 import br.com.api.estacionamento.repository.VagaRepository;
+import jakarta.transaction.Transactional;
 import lombok.var;
 
 @Service
+@Transactional
 public class VagaService {
 
     @Autowired

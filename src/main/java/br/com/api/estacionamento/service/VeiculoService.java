@@ -12,8 +12,10 @@ import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
 import br.com.api.estacionamento.model.Veiculo;
 import br.com.api.estacionamento.repository.VeiculoRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class VeiculoService {
 
     @Autowired

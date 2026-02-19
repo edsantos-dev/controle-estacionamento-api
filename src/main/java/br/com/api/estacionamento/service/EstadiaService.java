@@ -14,8 +14,10 @@ import br.com.api.estacionamento.model.Veiculo;
 import br.com.api.estacionamento.repository.EstadiaRepository;
 import br.com.api.estacionamento.repository.VagaRepository;
 import br.com.api.estacionamento.repository.VeiculoRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class EstadiaService {
 
     @Autowired

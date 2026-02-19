@@ -34,7 +34,6 @@ public class VagaController {
     private VagaService vagaService;
     
     @PostMapping
-    @Transactional
     public ResponseEntity<DadosDetalhamentoVagaDTO> cadastrarVaga(@RequestBody @Valid DadosVagaDTO dados, UriComponentsBuilder uriBuilder) {
         
         var vaga = vagaService.salvarVaga(dados);
@@ -60,7 +59,6 @@ public class VagaController {
     }
     
     @PatchMapping("{id}/ocupar")
-    @Transactional
     public ResponseEntity<DadosDetalhamentoVagaDTO> ocuparVaga(@PathVariable Long id){
 
         var vaga = vagaService.ocuparVaga(id);
@@ -69,7 +67,6 @@ public class VagaController {
     }
     
     @PatchMapping("{id}/liberar")
-    @Transactional
     public ResponseEntity<DadosDetalhamentoVagaDTO> liberarVaga(@PathVariable Long id){
 
         var vaga = vagaService.liberarVaga(id);
@@ -78,7 +75,6 @@ public class VagaController {
     }
 
     @DeleteMapping("{id}")
-    @Transactional
     public ResponseEntity<Void> deletarVaga(@PathVariable Long id){
 
         vagaService.deletarVaga(id);

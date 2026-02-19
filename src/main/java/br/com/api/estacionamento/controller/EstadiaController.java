@@ -24,7 +24,6 @@ public class EstadiaController {
     private EstadiaService estadiaService;
 
     @PostMapping
-    @Transactional
     public ResponseEntity<DadosDetalhamentoEstadiaDTO> iniciarEstadia(@RequestBody @Valid DadosEstadiaDTO dados, UriComponentsBuilder uriBuilder) {
         
         var estadia = estadiaService.iniciarEstadia(dados);
