@@ -1,5 +1,7 @@
 package br.com.api.estacionamento.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,14 @@ public class VeiculoController {
         var uri = uriBuilder.path("/veiculos/{id}").buildAndExpand(veiculo.id()).toUri();
 
         return ResponseEntity.created(uri).body(veiculo);
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<DadosDetalhamentoVeiculoDTO>> listarVeiculos(){
+
+        var veiculo = veiculoService.listarVeiculos();
+
+        return ResponseEntity.ok().body(veiculo);
     }
     
     @GetMapping("/{id}")

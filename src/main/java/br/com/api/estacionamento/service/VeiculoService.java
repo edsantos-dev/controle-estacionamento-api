@@ -1,5 +1,7 @@
 package br.com.api.estacionamento.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,10 @@ public class VeiculoService {
 
         return new DadosDetalhamentoVeiculoDTO(veiculo);
 
+    }
+
+    public List<DadosDetalhamentoVeiculoDTO> listarVeiculos(){
+        return veiculoRepository.findAll().stream().map(DadosDetalhamentoVeiculoDTO::new).toList();
     }
 
     public DadosDetalhamentoVeiculoDTO listarVeiculoPorID(Long id){
