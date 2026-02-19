@@ -8,7 +8,6 @@ import br.com.api.estacionamento.dto.DadosDetalhamentoVagaDTO;
 import br.com.api.estacionamento.dto.DadosListagemVagaDTO;
 import br.com.api.estacionamento.dto.DadosVagaDTO;
 import br.com.api.estacionamento.service.VagaService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.var;
 

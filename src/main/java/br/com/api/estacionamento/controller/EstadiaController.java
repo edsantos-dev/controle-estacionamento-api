@@ -9,7 +9,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.service.EstadiaService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;

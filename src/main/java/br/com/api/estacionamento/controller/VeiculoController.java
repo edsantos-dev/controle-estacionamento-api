@@ -12,7 +12,6 @@ import br.com.api.estacionamento.dto.DadosDetalhamentoVeiculoDTO;
 import br.com.api.estacionamento.dto.DadosEdicaoVeiculoDTO;
 import br.com.api.estacionamento.dto.DadosVeiculoDTO;
 import br.com.api.estacionamento.service.VeiculoService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
