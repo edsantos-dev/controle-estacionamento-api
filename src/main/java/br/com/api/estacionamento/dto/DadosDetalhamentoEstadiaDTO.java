@@ -7,6 +7,7 @@ import br.com.api.estacionamento.model.StatusEstadia;
 
 public record DadosDetalhamentoEstadiaDTO(
 
+    Long id,
     int vagaNumero,
     String veiculoPlaca,
     LocalDateTime dataEntrada,
@@ -15,7 +16,7 @@ public record DadosDetalhamentoEstadiaDTO(
 ) {
 
     public DadosDetalhamentoEstadiaDTO(Estadia estadia){
-        this(estadia.getVaga().getNumero(), estadia.getVeiculo().getPlaca(), estadia.getDataEntrada(), estadia.getStatus());
+        this(estadia.getId(), estadia.getVaga().getNumero(), estadia.getVeiculo().getPlaca(), estadia.getDataEntrada(), estadia.getStatus());
     }
 
 }
