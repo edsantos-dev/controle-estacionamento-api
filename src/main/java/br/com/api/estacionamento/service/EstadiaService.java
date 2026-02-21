@@ -49,4 +49,14 @@ public class EstadiaService {
         return new DadosDetalhamentoEstadiaDTO(estadia);
     }
 
+    public DadosDetalhamentoEstadiaDTO encerrarEstadia(Long id){
+
+        Estadia estadia = estadiaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
+
+        estadia.encerrarEstadia();
+
+        return new DadosDetalhamentoEstadiaDTO(estadia);
+    }
+
 }
