@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosEncerramentoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.service.EstadiaService;
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,5 +34,11 @@ public class EstadiaController {
         return ResponseEntity.created(uri).body(estadia);
     }
     
+    @PatchMapping("/{id}")
+    public ResponseEntity<DadosEncerramentoEstadiaDTO> encerrarEstadia(@PathVariable Long id){
 
+        var estadia = estadiaService.encerrarEstadia(id);
+
+        return ResponseEntity.ok(estadia);
+}
 }
