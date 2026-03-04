@@ -40,5 +40,5 @@ public class EstadiaController {
         var estadia = estadiaService.encerrarEstadia(id);
 
         return ResponseEntity.ok(estadia);
-}
+    }
 }
