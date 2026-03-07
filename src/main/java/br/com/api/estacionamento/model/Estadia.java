@@ -78,10 +78,10 @@ public class Estadia {
         return valorFixo.add(valorExcedido).setScale(2, RoundingMode.HALF_UP);
     }
     
-    public void encerrarEstadia(){
+    public void gerarCobranca(){
 
         if(this.status != StatusEstadia.ATIVA){
-            throw new RegraNegocioException("Não é possível encerrar uma estadia que não esteja ATIVA.");
+            throw new RegraNegocioException("Não é possível gerar cobrança para uma estadia que não esteja ATIVA.");
         }
 
         this.dataSaida = LocalDateTime.now();

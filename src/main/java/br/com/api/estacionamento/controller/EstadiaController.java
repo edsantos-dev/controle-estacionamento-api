@@ -34,10 +34,10 @@ public class EstadiaController {
         return ResponseEntity.created(uri).body(estadia);
     }
     
-    @PatchMapping("/{id}")
-    public ResponseEntity<DadosEncerramentoEstadiaDTO> encerrarEstadia(@PathVariable Long id){
+    @PatchMapping("/{id}/cobranca")
+    public ResponseEntity<DadosEncerramentoEstadiaDTO> gerarCobranca(@PathVariable Long id){
 
-        var estadia = estadiaService.encerrarEstadia(id);
+        var estadia = estadiaService.gerarCobranca(id);
 
         return ResponseEntity.ok(estadia);
     }

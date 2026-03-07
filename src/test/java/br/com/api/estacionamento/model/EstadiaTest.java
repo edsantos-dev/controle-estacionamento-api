@@ -58,11 +58,11 @@ public class EstadiaTest {
 
     @Test
     @DisplayName("Deve encerrar a estadia corretamente mudando status e preenchendo valor e data de saída.")
-    public void encerrarEstadiaCaso1(){
+    public void gerarCobrancaCaso1(){
 
         Estadia estadia = new Estadia(new Vaga(), new Veiculo());
 
-        estadia.encerrarEstadia();
+        estadia.gerarCobranca();
 
         assertEquals(StatusEstadia.EM_COBRANCA, estadia.getStatus(), "O status deve ser alterado para EM_COBRANCA.");
         assertNotNull(estadia.getDataSaida(), "A data de saída deve ser preenchida com o momento atual.");
@@ -71,12 +71,12 @@ public class EstadiaTest {
 
     @Test
     @DisplayName("Deve lançar exceção ao tentar encerrar uma estadia que não está ATIVA.")
-    public void encerrarEstadiaCaso2(){
+    public void gerarCobrancaCaso2(){
 
         Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), LocalDateTime.now(), null, BigDecimal.ZERO, StatusEstadia.EM_COBRANCA);
 
-        RegraNegocioException exception = assertThrows(RegraNegocioException.class, () -> estadia.encerrarEstadia());
+        RegraNegocioException exception = assertThrows(RegraNegocioException.class, () -> estadia.gerarCobranca());
 
-        assertEquals("Não é possível encerrar uma estadia que não esteja ATIVA.", exception.getMessage());
+        assertEquals("Não é possível gerar cobrança para uma estadia que não esteja ATIVA.", exception.getMessage());
     }
 }

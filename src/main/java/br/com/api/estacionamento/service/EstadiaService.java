@@ -50,12 +50,12 @@ public class EstadiaService {
         return new DadosDetalhamentoEstadiaDTO(estadia);
     }
 
-    public DadosEncerramentoEstadiaDTO encerrarEstadia(Long id){
+    public DadosEncerramentoEstadiaDTO gerarCobranca(Long id){
 
         Estadia estadia = estadiaRepository.findById(id)
         .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
 
-        estadia.encerrarEstadia();
+        estadia.gerarCobranca();
 
         return new DadosEncerramentoEstadiaDTO(estadia);
     }

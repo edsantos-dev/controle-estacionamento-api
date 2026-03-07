@@ -31,7 +31,7 @@ public class EstadiaControllerTest {
 
     @Test
     @DisplayName("Deve retornar 200 OK e os dados ao encerrar estadia.")
-    public void encerrarEstadiaCaso1(){
+    public void gerarCobrancaCaso1(){
 
         Long idEstadiaFalsa = 1L;
 
@@ -45,9 +45,9 @@ public class EstadiaControllerTest {
             StatusEstadia.EM_COBRANCA
         );
 
-        when(estadiaService.encerrarEstadia(idEstadiaFalsa)).thenReturn(dtoFalso);
+        when(estadiaService.gerarCobranca(idEstadiaFalsa)).thenReturn(dtoFalso);
 
-        mockMvc.patch().uri("/estadias/{id}", idEstadiaFalsa)
+        mockMvc.patch().uri("/estadias/{id}/cobranca", idEstadiaFalsa)
                .contentType(MediaType.APPLICATION_JSON)
                .exchange()
                .assertThat()
@@ -60,23 +60,23 @@ public class EstadiaControllerTest {
                         .isEqualTo(dtoFalso);
                 });
 
-        verify(estadiaService, times(1)).encerrarEstadia(idEstadiaFalsa);
+        verify(estadiaService, times(1)).gerarCobranca(idEstadiaFalsa);
     }
 
     @Test
     @DisplayName("Deve retornar status 404 Not Found quando a estadia não existir.")
-    public void encerrarEstadiaCaso2(){
+    public void gerarCobrancaCaso2(){
 
         long idEstadiaInexistente = 99L;
 
-        when(estadiaService.encerrarEstadia(idEstadiaInexistente)).thenThrow(new RecursoNaoEncontradoException("Estadia não encontrada."));
+        when(estadiaService.gerarCobranca(idEstadiaInexistente)).thenThrow(new RecursoNaoEncontradoException("Estadia não encontrada."));
 
-        mockMvc.patch().uri("/estadias/{id}", idEstadiaInexistente)
+        mockMvc.patch().uri("/estadias/{id}/cobranca", idEstadiaInexistente)
                .contentType(MediaType.APPLICATION_JSON)
                .exchange()
                .assertThat()
                .hasStatus(HttpStatus.NOT_FOUND);
 
-        verify(estadiaService, times(1)).encerrarEstadia(idEstadiaInexistente);
+        verify(estadiaService, times(1)).gerarCobranca(idEstadiaInexistente);
     }
 }

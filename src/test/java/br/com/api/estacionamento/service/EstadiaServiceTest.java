@@ -44,7 +44,7 @@ public class EstadiaServiceTest {
     
     @Test
     @DisplayName("Deve encerrar estadia com sucesso e passar para o status EM_COBRANCA quando os dados forem válidos.")
-    void encerrarEstadiaCaso1(){
+    void gerarCobrancaCaso1(){
         
         Long idEstadia = 1L;
 
@@ -55,7 +55,7 @@ public class EstadiaServiceTest {
 
         when(estadiaRepository.findById(idEstadia)).thenReturn(Optional.of(estadiaFalsa));
 
-        DadosEncerramentoEstadiaDTO resultado = estadiaService.encerrarEstadia(idEstadia);
+        DadosEncerramentoEstadiaDTO resultado = estadiaService.gerarCobranca(idEstadia);
 
         assertEquals(StatusEstadia.EM_COBRANCA, estadiaFalsa.getStatus());
         assertNotNull(resultado, "o DTO retornado não deveria ser nulo.");
@@ -63,13 +63,13 @@ public class EstadiaServiceTest {
 
     @Test
     @DisplayName("Deve lançar exceção quando o ID de estadia não existir.")
-    void encerrarEstadiaCaso2(){
+    void gerarCobrancaCaso2(){
 
         Long idEstadiaInexistente = 99L;
 
         when(estadiaRepository.findById(idEstadiaInexistente)).thenReturn(Optional.empty());
 
-        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> estadiaService.encerrarEstadia(idEstadiaInexistente));
+        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> estadiaService.gerarCobranca(idEstadiaInexistente));
 
         assertEquals("Estadia não encontrada.", exception.getMessage());
     }
