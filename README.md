@@ -75,7 +75,7 @@ O projeto segue uma organização em camadas, separando responsabilidades:
   | PATCH  | /vagas/{id}/liberar | Marca a vaga como livre   |
   | DELETE | /vagas/{id}         | Remove uma vaga livre     |
 
-  ### Veículo
+### Veículo
 
    * Cadastrar veículo
    * Buscar veículo por ID
@@ -100,6 +100,43 @@ O projeto segue uma organização em camadas, separando responsabilidades:
    | POST   | /veiculos              | Cadastra um novo veículo                |
    | GET    | /veiculos/{id}         | Busca veículo por ID                    |
    | PATCH  | /veiculos/{id}         | Altera o tipo do veículo                |
+
+### Estadia
+   
+   A `Estadia` é a entidade central do sistema. Ela vincula um Veículo a uma Vaga e gerencia o controle de ocupação, tempo de permanência, cálculo de cobrança e o fluxo operacional do estacionamento.
+
+   * Registrar entrada de veículo (Iniciar Estadia).
+   * Registrar saída do veículo e calcular o valor devido (Gerar Cobrança).
+   * Confirmar o pagamento e concluir o ciclo (Quitar Estadia).
+
+   ### Regras de Negócio (Estadia)
+   
+   O ciclo de vida da Estadia segue uma Máquina de Estados Finita rigorosa: `ATIVA` → `EM_COBRANCA` → `ENCERRADA`. As transições de estado são protegidas e só ocorrem através de métodos específicos da entidade.
+
+   **1. Estado: ATIVA (Entrada do Veículo)**
+   * **Condição:** Exige uma vaga livre e um veículo válido.
+   * **Efeito:** A vaga passa a ficar ocupada, a `dataEntrada` é registrada e o status é `ATIVA`.
+   * **Restrição:** Não possui data de saída ou valor calculado.
+
+   **2. Estado: EM_COBRANCA (Saída do Veículo / Geração da Cobrança)**
+   * **Condição:** O status atual deve ser obrigatoriamente `ATIVA`.
+   * **Efeito:** A vaga associada é liberada, a `dataSaida` é registrada e o sistema calcula o `valorFinal` da cobrança.
+   * **Regra de Cálculo:**
+      
+      * **Até 15 minutos:** Taxa fixa de R$ 5,00.
+      * **Após 15 minutos:** R$ 5,00 + tarifa proporcional de R$ 10,00 por hora excedente. O valor é arredondado para duas casas decimais.
+
+   **3. Estado: ENCERRADA (Pagamento Confirmado)**
+   * **Condição:** O status atual deve ser obrigatoriamente `EM_COBRANCA`.
+   * **Efeito:** O status passa para `ENCERRADA`.
+   * **Restrição:** Uma estadia encerrada é estritamente **imutável** para garantir a integridade do domínio. Nenhuma alteração posterior é permitida.
+
+   ### Endpoints – Estadia
+   
+   | Método | Endpoint                        | Descrição                                                            |
+   | ------ | ------------------------------- | -------------------------------------------------------------------- |
+   | POST   | /estadias                       | Inicia uma nova estadia (vincula veículo e vaga)                     |
+   | PATCH  | /estadias/{id}/cobranca         | | Registra a saída, libera a vaga e gera a cobrança (`EM_COBRANCA`). |
 
 
 
@@ -169,17 +206,8 @@ mvn spring-boot:run
 
 ## Evoluções Futuras
 
-* Modelagem da entidade **Estadia**
-* Vincular Veículo e Vaga através da Estadia
-* Cálculo de tempo estacionado
-* Simulação de cobrança
-* Relatórios e histórico
-
-
-
-## Observações
-
-Atualmente, a exclusão de vagas é feita de forma **física**. Em um cenário real, a aplicação pode ser evoluída para **exclusão lógica**, visando auditoria e rastreabilidade.
-
-Este projeto faz parte do estudo e consolidação de conceitos de desenvolvimento backend com Spring Boot.
+* Implementação de Segurança (Spring Security + JWT) para controle de acesso.
+* Implementação de exclusão lógica para manter rastreabilidade e auditoria no banco de dados.
+* Implementação do último estado do ciclo de vida de Estadia (ENCERRADA).
+* Relatórios e histórico.
 

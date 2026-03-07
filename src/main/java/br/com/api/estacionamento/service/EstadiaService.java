@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosEncerramentoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
@@ -47,6 +48,16 @@ public class EstadiaService {
         Estadia estadia = estadiaRepository.save(new Estadia(vaga, veiculo));
 
         return new DadosDetalhamentoEstadiaDTO(estadia);
+    }
+
+    public DadosEncerramentoEstadiaDTO gerarCobranca(Long id){
+
+        Estadia estadia = estadiaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
+
+        estadia.gerarCobranca();
+
+        return new DadosEncerramentoEstadiaDTO(estadia);
     }
 
 }
