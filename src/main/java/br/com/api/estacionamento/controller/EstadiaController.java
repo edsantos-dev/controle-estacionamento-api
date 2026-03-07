@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
-import br.com.api.estacionamento.dto.DadosEncerramentoEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.service.EstadiaService;
 import jakarta.validation.Valid;
@@ -35,7 +35,7 @@ public class EstadiaController {
     }
     
     @PatchMapping("/{id}/cobranca")
-    public ResponseEntity<DadosEncerramentoEstadiaDTO> gerarCobranca(@PathVariable Long id){
+    public ResponseEntity<DadosGeracaoDeCobrancaEstadiaDTO> gerarCobranca(@PathVariable Long id){
 
         var estadia = estadiaService.gerarCobranca(id);
 

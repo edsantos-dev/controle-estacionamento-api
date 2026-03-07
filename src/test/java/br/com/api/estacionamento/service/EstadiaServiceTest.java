@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.api.estacionamento.dto.DadosEncerramentoEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.model.Estadia;
 import br.com.api.estacionamento.model.StatusEstadia;
@@ -55,7 +55,7 @@ public class EstadiaServiceTest {
 
         when(estadiaRepository.findById(idEstadia)).thenReturn(Optional.of(estadiaFalsa));
 
-        DadosEncerramentoEstadiaDTO resultado = estadiaService.gerarCobranca(idEstadia);
+        DadosGeracaoDeCobrancaEstadiaDTO resultado = estadiaService.gerarCobranca(idEstadia);
 
         assertEquals(StatusEstadia.EM_COBRANCA, estadiaFalsa.getStatus());
         assertNotNull(resultado, "o DTO retornado não deveria ser nulo.");

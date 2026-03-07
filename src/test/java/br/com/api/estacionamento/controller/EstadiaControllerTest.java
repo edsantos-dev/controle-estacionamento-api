@@ -15,7 +15,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import br.com.api.estacionamento.dto.DadosEncerramentoEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.model.StatusEstadia;
 import br.com.api.estacionamento.service.EstadiaService;
@@ -35,7 +35,7 @@ public class EstadiaControllerTest {
 
         Long idEstadiaFalsa = 1L;
 
-        DadosEncerramentoEstadiaDTO dtoFalso = new DadosEncerramentoEstadiaDTO(
+        DadosGeracaoDeCobrancaEstadiaDTO dtoFalso = new DadosGeracaoDeCobrancaEstadiaDTO(
             idEstadiaFalsa,
             1,
             "ABC123",
@@ -53,7 +53,7 @@ public class EstadiaControllerTest {
                .assertThat()
                .hasStatusOk()
                .bodyJson()
-               .convertTo(DadosEncerramentoEstadiaDTO.class)
+               .convertTo(DadosGeracaoDeCobrancaEstadiaDTO.class)
                .satisfies(dtoRetornado -> {
                     assertThat(dtoRetornado)
                         .usingRecursiveComparison()
