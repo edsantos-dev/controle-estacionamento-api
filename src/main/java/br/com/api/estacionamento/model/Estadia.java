@@ -43,6 +43,7 @@ public class Estadia {
 
     private LocalDateTime dataEntrada;
     private LocalDateTime dataSaida;
+    private LocalDateTime dataPagamento;
     private BigDecimal valorFinal;
 
     @Enumerated(EnumType.STRING)
@@ -103,6 +104,7 @@ public class Estadia {
             throw new RegraNegocioException("Não é possível quitar uma estadia que não esteja EM COBRANÇA.");
         }
 
+        this.dataPagamento = LocalDateTime.now();
         this.status = StatusEstadia.ENCERRADA;
     }
 }

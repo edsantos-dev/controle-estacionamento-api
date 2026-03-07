@@ -1,0 +1,1 @@
+alter table estadia add column data_pagamento datetime;

@@ -33,7 +33,7 @@ public class EstadiaTest {
         LocalDateTime dataEntradaFalsa = LocalDateTime.of(2026, 2, 27, 10, 0);
         LocalDateTime dataSaidaFalsa = LocalDateTime.of(2026, 2, 27, 10, 15);
 
-        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, BigDecimal.ZERO, StatusEstadia.ATIVA);
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, null, BigDecimal.ZERO, StatusEstadia.ATIVA);
 
         BigDecimal valor = estadia.calcularValorFinal();
 
@@ -47,7 +47,7 @@ public class EstadiaTest {
         LocalDateTime dataEntradaFalsa = LocalDateTime.of(2026, 2, 27, 10, 0);
         LocalDateTime dataSaidaFalsa = LocalDateTime.of(2026, 2, 27, 11, 0);
 
-        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, BigDecimal.ZERO, StatusEstadia.ATIVA);
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, null, BigDecimal.ZERO, StatusEstadia.ATIVA);
 
         BigDecimal valor = estadia.calcularValorFinal();
 
@@ -73,7 +73,7 @@ public class EstadiaTest {
     @DisplayName("Deve lançar exceção ao tentar encerrar uma estadia que não está ATIVA.")
     public void gerarCobrancaCaso2(){
 
-        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), LocalDateTime.now(), null, BigDecimal.ZERO, StatusEstadia.EM_COBRANCA);
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), LocalDateTime.now(), null, null, BigDecimal.ZERO, StatusEstadia.EM_COBRANCA);
 
         RegraNegocioException exception = assertThrows(RegraNegocioException.class, () -> estadia.gerarCobranca());
 
