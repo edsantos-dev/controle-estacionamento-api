@@ -56,6 +56,14 @@ public class Estadia {
         this.status = StatusEstadia.ATIVA;
     }
 
+    public boolean estaAtiva(){
+        return this.status == StatusEstadia.ATIVA;
+    }
+
+    public boolean estaEmCobranca(){
+        return this.status == StatusEstadia.EM_COBRANCA;
+    }
+
     public BigDecimal calcularValorFinal(){
 
         var diferenca = Duration.between(this.dataEntrada, this.dataSaida);
@@ -80,7 +88,7 @@ public class Estadia {
     
     public void gerarCobranca(){
 
-        if(this.status != StatusEstadia.ATIVA){
+        if(!estaAtiva()){
             throw new RegraNegocioException("Não é possível gerar cobrança para uma estadia que não esteja ATIVA.");
         }
 
@@ -91,7 +99,7 @@ public class Estadia {
 
     public void quitarEstadia(){
 
-        if (this.status != StatusEstadia.EM_COBRANCA){
+        if (!estaEmCobranca()){
             throw new RegraNegocioException("Não é possível quitar uma estadia que não esteja EM COBRANÇA.");
         }
 
