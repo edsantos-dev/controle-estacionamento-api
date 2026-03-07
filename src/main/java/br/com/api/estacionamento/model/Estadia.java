@@ -88,5 +88,13 @@ public class Estadia {
         this.valorFinal = calcularValorFinal();
         this.status = StatusEstadia.EM_COBRANCA;
     }
-    
+
+    public void quitarEstadia(){
+
+        if (this.status != StatusEstadia.EM_COBRANCA){
+            throw new RegraNegocioException("Não é possível quitar uma estadia que não esteja EM COBRANÇA.");
+        }
+
+        this.status = StatusEstadia.ENCERRADA;
+    }
 }
