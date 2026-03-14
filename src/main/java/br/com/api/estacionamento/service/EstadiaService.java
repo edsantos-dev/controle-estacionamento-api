@@ -53,8 +53,7 @@ public class EstadiaService {
 
     public DadosGeracaoDeCobrancaEstadiaDTO gerarCobranca(Long id){
 
-        Estadia estadia = estadiaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
+        Estadia estadia = encontrarEstadia(id);
 
         estadia.gerarCobranca();
 
@@ -63,11 +62,16 @@ public class EstadiaService {
 
     public DadosQuitacaoEstadiaDTO quitarEstadia(Long id){
 
-        Estadia estadia = estadiaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
+        Estadia estadia = encontrarEstadia(id);
 
         estadia.quitarEstadia();
 
         return new DadosQuitacaoEstadiaDTO(estadia);
+    }
+
+    private Estadia encontrarEstadia(long id){
+        
+        return estadiaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
     }
 }
