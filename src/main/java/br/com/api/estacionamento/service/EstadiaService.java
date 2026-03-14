@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
@@ -60,4 +61,13 @@ public class EstadiaService {
         return new DadosGeracaoDeCobrancaEstadiaDTO(estadia);
     }
 
+    public DadosQuitacaoEstadiaDTO quitarEstadia(Long id){
+
+        Estadia estadia = estadiaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
+
+        estadia.quitarEstadia();
+
+        return new DadosQuitacaoEstadiaDTO(estadia);
+    }
 }
