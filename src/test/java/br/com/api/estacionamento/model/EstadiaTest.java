@@ -1,8 +1,10 @@
 package br.com.api.estacionamento.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -54,6 +56,42 @@ public class EstadiaTest {
         BigDecimal valorEsperado = BigDecimal.valueOf(12.50).setScale(2, RoundingMode.HALF_UP);
 
         assertEquals(valorEsperado, valor, "O cálculo do valor proporcional está incorreto.");
+    }
+
+    @Test
+    public void estaAtivaCaso1(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.ATIVA;
+
+        assertTrue(estadia.estaAtiva(), "A estadia deve ser considerada ATIVA.");
+    }
+
+    @Test
+    public void estaAtivaCaso2(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.EM_COBRANCA;
+
+        assertFalse(estadia.estaAtiva(), "A estadia não deve ser considerada ATIVA.");
+    }
+
+    @Test
+    public void estaEmCobrancaCaso1(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.EM_COBRANCA;
+
+        assertTrue(estadia.estaEmCobranca(), "A estadia deve ser considerada EM COBRANÇA.");
+    }
+    
+    @Test
+    public void estaEmCobrancaCaso2(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.ENCERRADA;
+
+        assertFalse(estadia.estaEmCobranca(), "A estadia não deve ser considerada EM COBRANÇA.");
     }
 
     @Test
