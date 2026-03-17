@@ -79,4 +79,31 @@ public class EstadiaTest {
 
         assertEquals("Não é possível gerar cobrança para uma estadia que não esteja ATIVA.", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("Deve quitar a estadia corretamente mudando status e preenchendo data de pagamento.")
+    public void quitarEstadiaCaso1(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.EM_COBRANCA;
+
+        estadia.quitarEstadia();
+
+        assertEquals(StatusEstadia.ENCERRADA, estadia.getStatus(), "O status deve ser alterado para ENCERRADA");
+        assertNotNull(estadia.getDataPagamento(), "A data de pagamento deve ser preenchida com o momento atual.");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar quitar uma estadia que não está EM COBRANÇA.")
+    public void quitarEstadiaCaso2(){
+
+        LocalDateTime dataEntradaFalsa = LocalDateTime.of(2026, 2, 27, 10, 0);
+        LocalDateTime dataSaidaFalsa = LocalDateTime.of(2026, 2, 27, 11, 0);
+
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, null, BigDecimal.valueOf(12.50), StatusEstadia.ENCERRADA);
+
+        RegraNegocioException exception = assertThrows(RegraNegocioException.class, () -> estadia.quitarEstadia());
+
+        assertEquals("Não é possível quitar uma estadia que não esteja EM COBRANÇA.", exception.getMessage());
+    }
 }
