@@ -3,8 +3,12 @@ package br.com.api.estacionamento.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.model.Estadia;
 import br.com.api.estacionamento.model.StatusEstadia;
@@ -72,5 +77,40 @@ public class EstadiaServiceTest {
         RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> estadiaService.gerarCobranca(idEstadiaInexistente));
 
         assertEquals("Estadia não encontrada.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve quitar estadia com sucesso e passar para o status ENCERRADA quando os dados forem válidos.")
+    void quitarEstadiaCaso1(){
+
+        Long idEstadia = 1L;
+        LocalDateTime dataEntradaFalsa = LocalDateTime.of(2026, 2, 27, 10, 0);
+        LocalDateTime dataSaidaFalsa = LocalDateTime.of(2026, 2, 27, 11, 0);
+
+        Estadia estadiaFalsa = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, null, BigDecimal.valueOf(12.50), StatusEstadia.EM_COBRANCA);
+
+        when(estadiaRepository.findById(idEstadia)).thenReturn(Optional.of(estadiaFalsa));
+
+        DadosQuitacaoEstadiaDTO resultado = estadiaService.quitarEstadia(idEstadia);
+
+        assertNotNull(resultado, "O DTO retornado não deveria ser nulo.");
+        assertEquals(StatusEstadia.ENCERRADA, estadiaFalsa.getStatus(), "O status da estadia deveria ser ENCERRADA após a quitação.");
+
+        verify(estadiaRepository, times(1)).findById(idEstadia);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar quitar uma estadia que não existe.")
+    void quitarEstadiaCaso2(){
+
+        Long idEstadiaInexistente = 99L;
+
+        when(estadiaRepository.findById(idEstadiaInexistente)).thenReturn(Optional.empty());
+
+        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> estadiaService.quitarEstadia(idEstadiaInexistente));
+
+        assertEquals("Estadia não encontrada.", exception.getMessage());
+
+        verify(estadiaRepository, times(1)).findById(idEstadiaInexistente);
     }
 }
