@@ -59,6 +59,7 @@ public class EstadiaTest {
     }
 
     @Test
+    @DisplayName("Deve considerar a estadia como ATIVA quando o status for ATIVA.")
     public void estaAtivaCaso1(){
 
         Estadia estadia = new Estadia();
@@ -68,6 +69,7 @@ public class EstadiaTest {
     }
 
     @Test
+    @DisplayName("Não deve considerar a estadia como ATIVA quando o status for diferente de ATIVA.")
     public void estaAtivaCaso2(){
 
         Estadia estadia = new Estadia();
@@ -77,6 +79,7 @@ public class EstadiaTest {
     }
 
     @Test
+    @DisplayName("Deve considerar a estadia como EM COBRANÇA quando o status for EM_COBRANCA.")
     public void estaEmCobrancaCaso1(){
 
         Estadia estadia = new Estadia();
@@ -86,6 +89,7 @@ public class EstadiaTest {
     }
     
     @Test
+    @DisplayName("Não deve considerar a estadia como EM COBRANÇA quando o status for diferente de EM_COBRANCA.")
     public void estaEmCobrancaCaso2(){
 
         Estadia estadia = new Estadia();
