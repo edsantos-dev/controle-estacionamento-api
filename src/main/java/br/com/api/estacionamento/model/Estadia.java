@@ -43,6 +43,7 @@ public class Estadia {
 
     private LocalDateTime dataEntrada;
     private LocalDateTime dataSaida;
+    private LocalDateTime dataPagamento;
     private BigDecimal valorFinal;
 
     @Enumerated(EnumType.STRING)
@@ -54,6 +55,14 @@ public class Estadia {
         this.dataEntrada = LocalDateTime.now();
         this.valorFinal = BigDecimal.ZERO;
         this.status = StatusEstadia.ATIVA;
+    }
+
+    public boolean estaAtiva(){
+        return this.status == StatusEstadia.ATIVA;
+    }
+
+    public boolean estaEmCobranca(){
+        return this.status == StatusEstadia.EM_COBRANCA;
     }
 
     public BigDecimal calcularValorFinal(){
@@ -80,7 +89,7 @@ public class Estadia {
     
     public void gerarCobranca(){
 
-        if(this.status != StatusEstadia.ATIVA){
+        if(!estaAtiva()){
             throw new RegraNegocioException("Não é possível gerar cobrança para uma estadia que não esteja ATIVA.");
         }
 
@@ -88,5 +97,14 @@ public class Estadia {
         this.valorFinal = calcularValorFinal();
         this.status = StatusEstadia.EM_COBRANCA;
     }
-    
+
+    public void quitarEstadia(){
+
+        if (!estaEmCobranca()){
+            throw new RegraNegocioException("Não é possível quitar uma estadia que não esteja EM COBRANÇA.");
+        }
+
+        this.dataPagamento = LocalDateTime.now();
+        this.status = StatusEstadia.ENCERRADA;
+    }
 }

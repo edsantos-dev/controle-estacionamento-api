@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
-import br.com.api.estacionamento.dto.DadosEncerramentoEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
@@ -50,14 +51,27 @@ public class EstadiaService {
         return new DadosDetalhamentoEstadiaDTO(estadia);
     }
 
-    public DadosEncerramentoEstadiaDTO gerarCobranca(Long id){
+    public DadosGeracaoDeCobrancaEstadiaDTO gerarCobranca(Long id){
 
-        Estadia estadia = estadiaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
+        Estadia estadia = encontrarEstadia(id);
 
         estadia.gerarCobranca();
 
-        return new DadosEncerramentoEstadiaDTO(estadia);
+        return new DadosGeracaoDeCobrancaEstadiaDTO(estadia);
     }
 
+    public DadosQuitacaoEstadiaDTO quitarEstadia(Long id){
+
+        Estadia estadia = encontrarEstadia(id);
+
+        estadia.quitarEstadia();
+
+        return new DadosQuitacaoEstadiaDTO(estadia);
+    }
+
+    private Estadia encontrarEstadia(long id){
+        
+        return estadiaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Estadia não encontrada."));
+    }
 }

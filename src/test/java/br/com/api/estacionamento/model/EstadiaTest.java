@@ -1,8 +1,10 @@
 package br.com.api.estacionamento.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,7 +35,7 @@ public class EstadiaTest {
         LocalDateTime dataEntradaFalsa = LocalDateTime.of(2026, 2, 27, 10, 0);
         LocalDateTime dataSaidaFalsa = LocalDateTime.of(2026, 2, 27, 10, 15);
 
-        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, BigDecimal.ZERO, StatusEstadia.ATIVA);
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, null, BigDecimal.ZERO, StatusEstadia.ATIVA);
 
         BigDecimal valor = estadia.calcularValorFinal();
 
@@ -47,13 +49,53 @@ public class EstadiaTest {
         LocalDateTime dataEntradaFalsa = LocalDateTime.of(2026, 2, 27, 10, 0);
         LocalDateTime dataSaidaFalsa = LocalDateTime.of(2026, 2, 27, 11, 0);
 
-        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, BigDecimal.ZERO, StatusEstadia.ATIVA);
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, null, BigDecimal.ZERO, StatusEstadia.ATIVA);
 
         BigDecimal valor = estadia.calcularValorFinal();
 
         BigDecimal valorEsperado = BigDecimal.valueOf(12.50).setScale(2, RoundingMode.HALF_UP);
 
         assertEquals(valorEsperado, valor, "O cálculo do valor proporcional está incorreto.");
+    }
+
+    @Test
+    @DisplayName("Deve considerar a estadia como ATIVA quando o status for ATIVA.")
+    public void estaAtivaCaso1(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.ATIVA;
+
+        assertTrue(estadia.estaAtiva(), "A estadia deve ser considerada ATIVA.");
+    }
+
+    @Test
+    @DisplayName("Não deve considerar a estadia como ATIVA quando o status for diferente de ATIVA.")
+    public void estaAtivaCaso2(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.EM_COBRANCA;
+
+        assertFalse(estadia.estaAtiva(), "A estadia não deve ser considerada ATIVA.");
+    }
+
+    @Test
+    @DisplayName("Deve considerar a estadia como EM COBRANÇA quando o status for EM_COBRANCA.")
+    public void estaEmCobrancaCaso1(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.EM_COBRANCA;
+
+        assertTrue(estadia.estaEmCobranca(), "A estadia deve ser considerada EM COBRANÇA.");
+    }
+    
+    @Test
+    @DisplayName("Não deve considerar a estadia como EM COBRANÇA quando o status for diferente de EM_COBRANCA.")
+    public void estaEmCobrancaCaso2(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.ENCERRADA;
+
+        assertFalse(estadia.estaEmCobranca(), "A estadia não deve ser considerada EM COBRANÇA.");
     }
 
     @Test
@@ -73,10 +115,37 @@ public class EstadiaTest {
     @DisplayName("Deve lançar exceção ao tentar encerrar uma estadia que não está ATIVA.")
     public void gerarCobrancaCaso2(){
 
-        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), LocalDateTime.now(), null, BigDecimal.ZERO, StatusEstadia.EM_COBRANCA);
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), LocalDateTime.now(), null, null, BigDecimal.ZERO, StatusEstadia.EM_COBRANCA);
 
         RegraNegocioException exception = assertThrows(RegraNegocioException.class, () -> estadia.gerarCobranca());
 
         assertEquals("Não é possível gerar cobrança para uma estadia que não esteja ATIVA.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve quitar a estadia corretamente mudando status e preenchendo data de pagamento.")
+    public void quitarEstadiaCaso1(){
+
+        Estadia estadia = new Estadia();
+        estadia.status = StatusEstadia.EM_COBRANCA;
+
+        estadia.quitarEstadia();
+
+        assertEquals(StatusEstadia.ENCERRADA, estadia.getStatus(), "O status deve ser alterado para ENCERRADA");
+        assertNotNull(estadia.getDataPagamento(), "A data de pagamento deve ser preenchida com o momento atual.");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar quitar uma estadia que não está EM COBRANÇA.")
+    public void quitarEstadiaCaso2(){
+
+        LocalDateTime dataEntradaFalsa = LocalDateTime.of(2026, 2, 27, 10, 0);
+        LocalDateTime dataSaidaFalsa = LocalDateTime.of(2026, 2, 27, 11, 0);
+
+        Estadia estadia = new Estadia(1L, new Vaga(), new Veiculo(), dataEntradaFalsa, dataSaidaFalsa, null, BigDecimal.valueOf(12.50), StatusEstadia.ENCERRADA);
+
+        RegraNegocioException exception = assertThrows(RegraNegocioException.class, () -> estadia.quitarEstadia());
+
+        assertEquals("Não é possível quitar uma estadia que não esteja EM COBRANÇA.", exception.getMessage());
     }
 }
