@@ -39,16 +39,14 @@ public class VagaService {
 
     public DadosDetalhamentoVagaDTO listarPorId (Long id) {
 
-        var vagaId = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
+        var vagaId = encontrarVaga(id);
 
         return new DadosDetalhamentoVagaDTO(vagaId);
     }
 
     public DadosDetalhamentoVagaDTO ocuparVaga(Long id){
 
-        var vaga = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
+        var vaga = encontrarVaga(id);
 
         vaga.ocupar();
         vagaRepository.save(vaga);
@@ -59,8 +57,7 @@ public class VagaService {
 
     public DadosDetalhamentoVagaDTO liberarVaga(Long id){
 
-        var vaga = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
+        var vaga = encontrarVaga(id);
 
         vaga.liberar();
         vagaRepository.save(vaga);
@@ -70,14 +67,19 @@ public class VagaService {
 
     public void deletarVaga(Long id){
 
-        var vaga = vagaRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
+        var vaga = encontrarVaga(id);
 
         if(vaga.isOcupada()){
             throw new RegraNegocioException("Não é possível deletar uma vaga que está ocupada.");
         }
 
         vagaRepository.delete(vaga);
+    }
+
+    private Vaga encontrarVaga(Long id){
+
+        return vagaRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
     }
         
 }
