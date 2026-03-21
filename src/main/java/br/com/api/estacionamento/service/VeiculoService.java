@@ -39,22 +39,25 @@ public class VeiculoService {
 
     public DadosDetalhamentoVeiculoDTO listarVeiculoPorID(Long id){
 
-        var veiculoId = veiculoRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
+        var veiculo = encontrarVeiculo(id);
 
-        return new DadosDetalhamentoVeiculoDTO(veiculoId);
+        return new DadosDetalhamentoVeiculoDTO(veiculo);
 
     }
 
     public DadosDetalhamentoVeiculoDTO editarVeiculo(Long id, DadosEdicaoVeiculoDTO dados){
 
-        var veiculoId = veiculoRepository.findById(id)
-        .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
+        var veiculo = encontrarVeiculo(id);
 
-        veiculoId.setTipo(dados.tipo());
-        veiculoRepository.save(veiculoId);
+        veiculo.setTipo(dados.tipo());
+        veiculoRepository.save(veiculo);
 
-        return new DadosDetalhamentoVeiculoDTO(veiculoId);
+        return new DadosDetalhamentoVeiculoDTO(veiculo);
     }
 
+    private Veiculo encontrarVeiculo(Long id){
+
+        return veiculoRepository.findById(id)
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
+    }
 }
