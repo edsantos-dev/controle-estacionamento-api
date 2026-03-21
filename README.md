@@ -9,10 +9,9 @@
 
 ## Descrição
 
-API REST desenvolvida em **Spring Boot** para controle de vagas de estacionamento. O projeto tem como objetivo o estudo de boas práticas de desenvolvimento backend, organização em camadas, regras de negócio e padronização de respostas HTTP.
+API REST desenvolvida em **Spring Boot** para controle de vagas de estacionamento. O projeto tem como objetivo o estudo prático e aprofundado de boas práticas de Engenharia de Software, aplicando Clean Code, Domain-Driven Design (DDD) na organização das regras de negócio, e padronização rigorosa de respostas HTTP.
 
-Atualmente, o sistema contempla o **CRUD completo da entidade Vaga**, servindo como base para futuras evoluções, como a integração com veículos e histórico de ocupação.
-
+Atualmente, o sistema contempla o gerenciamento completo de **Vagas**, **Veículos** e a orquestração do ciclo de vida financeiro e operacional de **Estadias** (da entrada do veículo até a quitação final).
 
 
 ## Tecnologias Utilizadas
@@ -30,14 +29,14 @@ Atualmente, o sistema contempla o **CRUD completo da entidade Vaga**, servindo c
 
 ## Estrutura do Projeto
 
-O projeto segue uma organização em camadas, separando responsabilidades:
+O projeto segue uma arquitetura em camadas bem definida, separando responsabilidades:
 
-* **controller**: camada responsável pelos endpoints REST
-* **service**: contém as regras de negócio da aplicação
-* **repository**: comunicação com o banco de dados
-* **model**: entidades JPA
-* **dto**: objetos de transferência de dados
-* **exception**: exceções customizadas e tratamento global de erros
+* **controller**: camada responsável pelos endpoints REST (Thin Controllers).
+* **service**: orquestração de casos de uso e injeção de dependências.
+* **repository**: comunicação com o banco de dados (Spring Data).
+* **model**: entidades ricas (Domain Models) que encapsulam as regras de transição de estado.
+* **dto**: objetos de transferência de dados (Records) para entrada e saída.
+* **exception**: tratamento global de erros (`@ControllerAdvice`) blindando o domínio.
 
 
 ## Funcionalidades
@@ -54,14 +53,14 @@ O projeto segue uma organização em camadas, separando responsabilidades:
 
   ### Regras de Negócio (Vaga)
 
-  * O número da vaga é único
-  * Toda vaga é criada como **livre**
+  * O número da vaga é único.
+  * Toda vaga é criada como **livre**.
   * Não é permitido:
 
-    * Cadastrar duas vagas com o mesmo número
-    * Ocupar uma vaga já ocupada
-    * Liberar uma vaga já livre
-    * Remover uma vaga que esteja ocupada
+    * Cadastrar duas vagas com o mesmo número.
+    * Ocupar uma vaga já ocupada.
+    * Liberar uma vaga já livre.
+    * Remover uma vaga que esteja ocupada.
 
 
   ### Endpoints – Vaga
@@ -83,15 +82,15 @@ O projeto segue uma organização em camadas, separando responsabilidades:
 
    ### Regras de Negócio (Veículo)
 
-   * A placa do veículo é única
-   * Não é possível alterar a placa
-   * O veículo não possui estado (não está ocupado, livre, estacionado, etc.)
+   * A placa do veículo é única e validada logicamente.
+   * Não é possível alterar a placa após o registro.
+   * O veículo é uma entidade de cadastro estático (não controla tempo, entrada, saída ou pagamento, isso é responsabilidade da Estadia).
    * O veículo não controla tempo, entrada, saída ou pagamento
    * Não é permitido:
 
-      * Cadastrar dois veículos com a mesma placa
-      * Atualizar a placa
-      * Remover um veículo
+      * Cadastrar dois veículos com a mesma placa.
+      * Atualizar a placa.
+      * Remover um veículo.
 
    ### Endpoints – Veículo
 
@@ -128,7 +127,7 @@ O projeto segue uma organização em camadas, separando responsabilidades:
 
    **3. Estado: ENCERRADA (Pagamento Confirmado)**
    * **Condição:** O status atual deve ser obrigatoriamente `EM_COBRANCA`.
-   * **Efeito:** O status passa para `ENCERRADA`.
+   * **Efeito:** A `dataPagamento` é registrada e o status transita para `ENCERRADA`.
    * **Restrição:** Uma estadia encerrada é estritamente **imutável** para garantir a integridade do domínio. Nenhuma alteração posterior é permitida.
 
    ### Endpoints – Estadia
@@ -136,19 +135,20 @@ O projeto segue uma organização em camadas, separando responsabilidades:
    | Método | Endpoint                        | Descrição                                                            |
    | ------ | ------------------------------- | -------------------------------------------------------------------- |
    | POST   | /estadias                       | Inicia uma nova estadia (vincula veículo e vaga)                     |
-   | PATCH  | /estadias/{id}/cobranca         | | Registra a saída, libera a vaga e gera a cobrança (`EM_COBRANCA`). |
+   | PATCH  | /estadias/{id}/cobranca         | Registra a saída, libera a vaga e gera a cobrança (`EM_COBRANCA`)    |
+   | PATCH  | /estadias/{id}/quitacao         | Confirma o pagamento e encerra o ciclo da estadia (`ENCERRADA`)      |
 
 
 
 ## Tratamento de Erros
 
-A aplicação utiliza um **tratador global de exceções** (`@ControllerAdvice`) para padronizar as respostas de erro.
+A aplicação utiliza um **tratador global de exceções** (`@ControllerAdvice`) para padronizar as respostas de erro, garantindo que detalhes da infraestrutura não vazem para o cliente.
 
-Exemplos de status HTTP utilizados:
+Exemplos de status HTTP mapeados:
 
-* **400 Bad Request** – dados inválidos
-* **404 Not Found** – recurso não encontrado
-* **409 Conflict** – violação de regra de negócio
+* **400 Bad Request** – Dados inválidos ou mal formatados na requisição.
+* **404 Not Found** – Recurso não encontrado no banco de dados.
+* **409 Conflict / 422 Unprocessable Entity** – Violação de estado ou regra de negócio.
 
 As respostas seguem um padrão com código e mensagem de erro.
 
@@ -207,7 +207,7 @@ mvn spring-boot:run
 ## Evoluções Futuras
 
 * Implementação de Segurança (Spring Security + JWT) para controle de acesso.
-* Implementação de exclusão lógica para manter rastreabilidade e auditoria no banco de dados.
-* Implementação do último estado do ciclo de vida de Estadia (ENCERRADA).
-* Relatórios e histórico.
+* Geração de documentação automatizada via OpenAPI/Swagger.
+* Implementação de exclusão lógica (Soft Delete) para manter rastreabilidade e auditoria no banco de dados.
+* Relatórios e histórico de faturamento.
 
