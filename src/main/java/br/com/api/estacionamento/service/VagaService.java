@@ -73,7 +73,7 @@ public class VagaService {
         var vaga = vagaRepository.findById(id)
         .orElseThrow(() -> new RecursoNaoEncontradoException("Vaga não encontrada."));
 
-        if(!vaga.isOcupada()){
+        if(vaga.isOcupada()){
             throw new RegraNegocioException("Não é possível deletar uma vaga que está ocupada.");
         }
 
