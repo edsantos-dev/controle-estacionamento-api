@@ -16,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.model.StatusEstadia;
 import br.com.api.estacionamento.service.EstadiaService;
@@ -78,5 +79,58 @@ public class EstadiaControllerTest {
                .hasStatus(HttpStatus.NOT_FOUND);
 
         verify(estadiaService, times(1)).gerarCobranca(idEstadiaInexistente);
+    }
+
+    @Test
+    @DisplayName("Deve retornar 200 OK e os dados ao quitar estadia.")
+    public void quitarEstadiaCaso1(){
+
+        Long idEstadiaFalsa = 1L;
+
+        DadosQuitacaoEstadiaDTO dtoFalso = new DadosQuitacaoEstadiaDTO(
+            idEstadiaFalsa, 
+            1, 
+            "ABC123", 
+            LocalDateTime.of(2026, 1, 1, 10, 0), 
+            LocalDateTime.of(2026, 1, 1, 11, 0), 
+            LocalDateTime.of(2026, 1, 1, 11, 15), 
+            BigDecimal.valueOf(12.50), 
+            StatusEstadia.ENCERRADA
+        );
+
+        when(estadiaService.quitarEstadia(idEstadiaFalsa)).thenReturn(dtoFalso);
+
+        mockMvc.patch().uri("/estadias/{id}/quitacao", idEstadiaFalsa)
+        .contentType(MediaType.APPLICATION_JSON)
+        .exchange()
+        .assertThat()
+        .hasStatusOk()
+        .bodyJson()
+        .convertTo(DadosQuitacaoEstadiaDTO.class)
+        .satisfies(dtoRetornado -> {
+                assertThat(dtoRetornado)
+                .usingRecursiveComparison()
+                .isEqualTo(dtoFalso);
+            }
+        );
+
+        verify(estadiaService, times(1)).quitarEstadia(idEstadiaFalsa);
+    }
+
+    @Test
+    @DisplayName("Deve retornar status 404 Not Found quando a estadia não existir ao tentar quitar.")
+    public void quitarEstadiaCaso2(){
+
+        Long idEntidadeInexistente = 99L;
+
+        when(estadiaService.quitarEstadia(idEntidadeInexistente)).thenThrow(new RecursoNaoEncontradoException("Estadia não encontrada."));
+
+        mockMvc.patch().uri("/estadias/{id}/quitacao", idEntidadeInexistente)
+        .contentType(MediaType.APPLICATION_JSON)
+        .exchange()
+        .assertThat()
+        .hasStatus(HttpStatus.NOT_FOUND);
+
+        verify(estadiaService, times(1)).quitarEstadia(idEntidadeInexistente);
     }
 }
