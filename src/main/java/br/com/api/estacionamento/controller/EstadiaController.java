@@ -61,7 +61,7 @@ public class EstadiaController {
     @GetMapping
     public ResponseEntity<Page<DadosListagemEstadiaDTO>> listarEstadia(
         @RequestParam (required = false) StatusEstadia status, 
-        @PageableDefault (size = 10, sort = {"dataDeEntrada"}) Pageable paginacao) {
+        @PageableDefault (size = 10, sort = {"dataEntrada"}) Pageable paginacao) {
         
         var page = estadiaService.listarEstadia(status, paginacao);
 
