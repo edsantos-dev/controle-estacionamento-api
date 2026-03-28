@@ -1,10 +1,13 @@
 package br.com.api.estacionamento.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
@@ -67,6 +70,19 @@ public class EstadiaService {
         estadia.quitarEstadia();
 
         return new DadosQuitacaoEstadiaDTO(estadia);
+    }
+
+    public Page<DadosListagemEstadiaDTO> listarEstadia(StatusEstadia status, Pageable paginacao){
+        
+        Page<Estadia> estadiaPage;
+
+        if(status == null){
+            estadiaPage = estadiaRepository.findAll(paginacao);
+        } else{
+            estadiaPage = estadiaRepository.findByStatus(status, paginacao);
+        }
+
+        return estadiaPage.map(DadosListagemEstadiaDTO::new);
     }
 
     private Estadia encontrarEstadia(long id){
