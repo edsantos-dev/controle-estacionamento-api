@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.api.estacionamento.dto.DadosDetalhamentoEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosIniciacaoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
@@ -34,7 +34,7 @@ public class EstadiaService {
     @Autowired
     private EstadiaRepository estadiaRepository;
 
-    public DadosDetalhamentoEstadiaDTO iniciarEstadia(DadosEstadiaDTO dados){
+    public DadosIniciacaoEstadiaDTO iniciarEstadia(DadosEstadiaDTO dados){
 
         Vaga vaga = vagaRepository.findById(dados.idVaga())
         .orElseThrow(() -> new RecursoNaoEncontradoException("A vaga não foi encontrada."));
@@ -51,7 +51,7 @@ public class EstadiaService {
 
         Estadia estadia = estadiaRepository.save(new Estadia(vaga, veiculo));
 
-        return new DadosDetalhamentoEstadiaDTO(estadia);
+        return new DadosIniciacaoEstadiaDTO(estadia);
     }
 
     public DadosGeracaoDeCobrancaEstadiaDTO gerarCobranca(Long id){
