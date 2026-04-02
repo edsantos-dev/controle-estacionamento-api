@@ -1,5 +1,8 @@
 package br.com.api.estacionamento.service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +13,7 @@ import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosFaturamentoEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
 import br.com.api.estacionamento.model.Estadia;
@@ -83,6 +87,18 @@ public class EstadiaService {
         }
 
         return estadiaPage.map(DadosListagemEstadiaDTO::new);
+    }
+
+    public DadosFaturamentoEstadiaDTO obterRelatorioFaturamento(LocalDate inicio, LocalDate fim){
+
+        var dataIniciDoDia = inicio.atStartOfDay();
+        var dataFimDoDia = fim.atTime(LocalTime.MAX);
+
+        return estadiaRepository.calcularFaturamentoPorPeriodo(
+            StatusEstadia.ENCERRADA,
+            dataIniciDoDia,
+            dataFimDoDia
+        );
     }
 
     private Estadia encontrarEstadia(long id){
