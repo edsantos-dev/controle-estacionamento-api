@@ -3,12 +3,15 @@ package br.com.api.estacionamento.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -18,8 +21,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.model.Estadia;
@@ -112,5 +120,44 @@ public class EstadiaServiceTest {
         assertEquals("Estadia não encontrada.", exception.getMessage());
 
         verify(estadiaRepository, times(1)).findById(idEstadiaInexistente);
+    }
+
+    @Test
+    @DisplayName("Deve listar todas as estadias paginadas quando o status for nulo.")
+    void listarEstadiaCaso1(){
+
+        Pageable paginacao = PageRequest.of(0, 10);
+        Estadia estadiaFalsa = new Estadia(new Vaga(), new Veiculo());
+
+        Page<Estadia> paginaFalsa = new PageImpl<>(List.of(estadiaFalsa));
+
+        when(estadiaRepository.findAll(paginacao)).thenReturn(paginaFalsa);
+
+        Page<DadosListagemEstadiaDTO> resultado = estadiaService.listarEstadia(null, paginacao);
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.getTotalElements());
+
+        verify(estadiaRepository).findAll(paginacao);
+        verify(estadiaRepository, never()).findByStatus(any(), any());
+    }
+
+    @Test
+    @DisplayName("Deve filtrar as estadias paginadas quando o status for informado.")
+    void listarEstadiaCaso2(){
+
+        Pageable paginacao = PageRequest.of(0,10);
+        Estadia estadiaFalsa = new Estadia(new Vaga(), new Veiculo());
+        StatusEstadia statusFalso = StatusEstadia.ATIVA;
+
+        Page<Estadia> paginaFalsa = new PageImpl<>(List.of(estadiaFalsa));
+
+        when(estadiaRepository.findByStatus(statusFalso, paginacao)).thenReturn(paginaFalsa);
+
+        Page<DadosListagemEstadiaDTO> resultado = estadiaService.listarEstadia(statusFalso, paginacao);
+
+        assertNotNull(resultado);
+        verify(estadiaRepository).findByStatus(statusFalso, paginacao);
+        verify(estadiaRepository, never()).findAll(paginacao);
     }
 }

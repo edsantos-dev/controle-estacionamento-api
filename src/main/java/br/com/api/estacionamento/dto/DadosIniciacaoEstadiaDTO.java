@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import br.com.api.estacionamento.model.Estadia;
 import br.com.api.estacionamento.model.StatusEstadia;
 
-public record DadosDetalhamentoEstadiaDTO(
+public record DadosIniciacaoEstadiaDTO(
 
     Long id,
     int vagaNumero,
@@ -15,7 +15,7 @@ public record DadosDetalhamentoEstadiaDTO(
 
 ) {
 
-    public DadosDetalhamentoEstadiaDTO(Estadia estadia){
+    public DadosIniciacaoEstadiaDTO(Estadia estadia){
         this(estadia.getId(), estadia.getVaga().getNumero(), estadia.getVeiculo().getPlaca(), estadia.getDataEntrada(), estadia.getStatus());
     }
 
