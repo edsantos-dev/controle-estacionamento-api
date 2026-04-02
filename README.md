@@ -107,6 +107,7 @@ O projeto segue uma arquitetura em camadas bem definida, separando responsabilid
    * Registrar entrada de veículo (Iniciar Estadia).
    * Registrar saída do veículo e calcular o valor devido (Gerar Cobrança).
    * Confirmar o pagamento e concluir o ciclo (Quitar Estadia).
+   * Listar estadias com suporte a paginação e filtro por status.
 
    ### Regras de Negócio (Estadia)
    
@@ -135,9 +136,17 @@ O projeto segue uma arquitetura em camadas bem definida, separando responsabilid
    | Método | Endpoint                        | Descrição                                                            |
    | ------ | ------------------------------- | -------------------------------------------------------------------- |
    | POST   | /estadias                       | Inicia uma nova estadia (vincula veículo e vaga)                     |
+   | GET    | /estadias                       | Lista as estadias de forma paginada (com filtro opcional de status)  |
    | PATCH  | /estadias/{id}/cobranca         | Registra a saída, libera a vaga e gera a cobrança (`EM_COBRANCA`)    |
    | PATCH  | /estadias/{id}/quitacao         | Confirma o pagamento e encerra o ciclo da estadia (`ENCERRADA`)      |
 
+   **Detalhes da Listagem (`GET /estadias`)**
+
+   **Parâmetros de Consulta (Query Params) Opcionais:**
+   * `status` (string): Filtra as estadias por status (ex: `ATIVA`, `EM_COBRANCA`, `ENCERRADA`). Se omitido, retorna todas.
+   * `page` (int): Número da página (padrão: `0`).
+   * `size` (int): Quantidade de itens por página (padrão: `10`).
+   * `sort` (string): Campo de ordenação (padrão: `dataEntrada,ASC`).
 
 
 ## Tratamento de Erros
