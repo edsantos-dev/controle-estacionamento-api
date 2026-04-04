@@ -4,13 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +29,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import br.com.api.estacionamento.dto.DadosFaturamentoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
@@ -159,5 +163,22 @@ public class EstadiaServiceTest {
         assertNotNull(resultado);
         verify(estadiaRepository).findByStatus(statusFalso, paginacao);
         verify(estadiaRepository, never()).findAll(paginacao);
+    }
+
+    @Test
+    @DisplayName("Deve obter relatório de faturamento com datas ajustadas para os limites do dia")
+    void obterRelatorioFaturamentoCaso1(){
+
+        LocalDate inicioFalso = LocalDate.of(2026, 4, 1);
+        LocalDate fimFalso = LocalDate.of(2026, 4, 10);
+
+        DadosFaturamentoEstadiaDTO relatorioEsperado = new DadosFaturamentoEstadiaDTO(15L, new BigDecimal("750.50"));
+
+        when(estadiaRepository.calcularFaturamentoPorPeriodo(eq(StatusEstadia.ENCERRADA), eq(inicioFalso.atStartOfDay()), eq(fimFalso.atTime(LocalTime.MAX)))).thenReturn(relatorioEsperado);
+
+        DadosFaturamentoEstadiaDTO resultado = estadiaService.obterRelatorioFaturamento(inicioFalso, fimFalso);
+
+        assertEquals(relatorioEsperado, resultado, "O relatório resultante precisa ser como o esperado.");
+        verify(estadiaRepository).calcularFaturamentoPorPeriodo(eq(StatusEstadia.ENCERRADA), eq(inicioFalso.atStartOfDay()), eq(fimFalso.atTime(LocalTime.MAX)));
     }
 }
