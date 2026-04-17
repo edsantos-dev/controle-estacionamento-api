@@ -91,6 +91,10 @@ public class EstadiaService {
 
     public DadosFaturamentoEstadiaDTO obterRelatorioFaturamento(LocalDate inicio, LocalDate fim){
 
+        if (inicio.isAfter(fim)){
+            throw new IllegalArgumentException("A data de fim não pode ser menor que a de início.");
+        }
+        
         var dataIniciDoDia = inicio.atStartOfDay();
         var dataFimDoDia = fim.atTime(LocalTime.MAX);
 
