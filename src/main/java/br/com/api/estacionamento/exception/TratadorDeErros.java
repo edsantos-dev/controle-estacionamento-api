@@ -27,4 +27,9 @@ public class TratadorDeErros {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RespostaDeErroDTO(400, "Algum(ns) campo(s) foi(ram) preenchido(s) incorretamente."));
     }
 
+    @ExceptionHandler(ValidacaoDeDadosException.class)
+    public ResponseEntity<RespostaDeErroDTO> tratarValidacaoDeDados(ValidacaoDeDadosException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RespostaDeErroDTO(400, ex.getMessage()));
+    }
+
 }
