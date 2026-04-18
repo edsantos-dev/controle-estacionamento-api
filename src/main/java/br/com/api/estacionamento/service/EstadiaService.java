@@ -16,6 +16,7 @@ import br.com.api.estacionamento.dto.DadosEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosFaturamentoEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
+import br.com.api.estacionamento.exception.ValidacaoDeDadosException;
 import br.com.api.estacionamento.model.Estadia;
 import br.com.api.estacionamento.model.StatusEstadia;
 import br.com.api.estacionamento.model.Vaga;
@@ -92,7 +93,7 @@ public class EstadiaService {
     public DadosFaturamentoEstadiaDTO obterRelatorioFaturamento(LocalDate inicio, LocalDate fim){
 
         if (inicio.isAfter(fim)){
-            throw new IllegalArgumentException("A data de fim não pode ser menor que a de início.");
+            throw new ValidacaoDeDadosException("A data de fim não pode ser menor que a de início.");
         }
         
         var dataIniciDoDia = inicio.atStartOfDay();
