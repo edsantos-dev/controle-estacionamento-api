@@ -185,6 +185,7 @@ public class EstadiaServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ValidacaoDeDadosException quando a data de início for maior que a data de fim")
     void obterRelatorioFaturamentoCaso2(){
 
         LocalDate inicioFalso = LocalDate.of(2026, 4, 10);
