@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -34,6 +35,7 @@ import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
+import br.com.api.estacionamento.exception.ValidacaoDeDadosException;
 import br.com.api.estacionamento.model.Estadia;
 import br.com.api.estacionamento.model.StatusEstadia;
 import br.com.api.estacionamento.model.Tipo;
@@ -180,5 +182,18 @@ public class EstadiaServiceTest {
 
         assertEquals(relatorioEsperado, resultado, "O relatório resultante precisa ser como o esperado.");
         verify(estadiaRepository).calcularFaturamentoPorPeriodo(eq(StatusEstadia.ENCERRADA), eq(inicioFalso.atStartOfDay()), eq(fimFalso.atTime(LocalTime.MAX)));
+    }
+
+    @Test
+    void obterRelatorioFaturamentoCaso2(){
+
+        LocalDate inicioFalso = LocalDate.of(2026, 4, 10);
+        LocalDate fimFalso = LocalDate.of(2026, 4, 1);
+
+        ValidacaoDeDadosException exception = assertThrows(ValidacaoDeDadosException.class, () -> estadiaService.obterRelatorioFaturamento(inicioFalso, fimFalso));
+
+        assertEquals("A data de fim não pode ser menor que a de início.", exception.getMessage());
+
+        verifyNoInteractions(estadiaRepository);
     }
 }
