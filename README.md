@@ -108,6 +108,7 @@ O projeto segue uma arquitetura em camadas bem definida, separando responsabilid
    * Registrar saída do veículo e calcular o valor devido (Gerar Cobrança).
    * Confirmar o pagamento e concluir o ciclo (Quitar Estadia).
    * Listar estadias com suporte a paginação e filtro por status.
+   * Gerar relatório de faturamento por período.
 
    ### Regras de Negócio (Estadia)
    
@@ -131,14 +132,19 @@ O projeto segue uma arquitetura em camadas bem definida, separando responsabilid
    * **Efeito:** A `dataPagamento` é registrada e o status transita para `ENCERRADA`.
    * **Restrição:** Uma estadia encerrada é estritamente **imutável** para garantir a integridade do domínio. Nenhuma alteração posterior é permitida.
 
+   **4. Relatórios de Faturamento**
+   * **Condição:** O sistema contabiliza apenas estadias com status `ENCERRADA`.
+   * **Restrição:** A data de início da busca não pode ser posterior à data de fim.
+
    ### Endpoints – Estadia
    
-   | Método | Endpoint                        | Descrição                                                            |
-   | ------ | ------------------------------- | -------------------------------------------------------------------- |
-   | POST   | /estadias                       | Inicia uma nova estadia (vincula veículo e vaga)                     |
-   | GET    | /estadias                       | Lista as estadias de forma paginada (com filtro opcional de status)  |
-   | PATCH  | /estadias/{id}/cobranca         | Registra a saída, libera a vaga e gera a cobrança (`EM_COBRANCA`)    |
-   | PATCH  | /estadias/{id}/quitacao         | Confirma o pagamento e encerra o ciclo da estadia (`ENCERRADA`)      |
+   | Método | Endpoint                        | Descrição                                                                                       |
+   | ------ | ------------------------------- | ----------------------------------------------------------------------------------------------- |
+   | POST   | /estadias                       | Inicia uma nova estadia (vincula veículo e vaga)                                                |
+   | GET    | /estadias                       | Lista as estadias de forma paginada (com filtro opcional de status)                             |
+   | GET    | /estadias/faturamento           | Retorna o total faturado e a quantidade de estadias num período (parâmetros: `inicio` e `fim`)  |
+   | PATCH  | /estadias/{id}/cobranca         | Registra a saída, libera a vaga e gera a cobrança (`EM_COBRANCA`)                               |
+   | PATCH  | /estadias/{id}/quitacao         | Confirma o pagamento e encerra o ciclo da estadia (`ENCERRADA`)                                 |
 
    **Detalhes da Listagem (`GET /estadias`)**
 
@@ -155,7 +161,7 @@ A aplicação utiliza um **tratador global de exceções** (`@ControllerAdvice`)
 
 Exemplos de status HTTP mapeados:
 
-* **400 Bad Request** – Dados inválidos ou mal formatados na requisição.
+* **400 Bad Request** – Dados inválidos, JSON mal formatado ou falhas de validação semântica (ex: datas de busca invertidas).
 * **404 Not Found** – Recurso não encontrado no banco de dados.
 * **409 Conflict / 422 Unprocessable Entity** – Violação de estado ou regra de negócio.
 
@@ -218,5 +224,4 @@ mvn spring-boot:run
 * Implementação de Segurança (Spring Security + JWT) para controle de acesso.
 * Geração de documentação automatizada via OpenAPI/Swagger.
 * Implementação de exclusão lógica (Soft Delete) para manter rastreabilidade e auditoria no banco de dados.
-* Relatórios e histórico de faturamento.
 
