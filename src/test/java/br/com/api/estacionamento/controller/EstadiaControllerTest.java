@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,10 +25,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
+import br.com.api.estacionamento.dto.DadosFaturamentoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
+import br.com.api.estacionamento.dto.RespostaDeErroDTO;
 import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
+import br.com.api.estacionamento.exception.ValidacaoDeDadosException;
 import br.com.api.estacionamento.model.StatusEstadia;
 import br.com.api.estacionamento.service.EstadiaService;
 
@@ -209,5 +213,59 @@ public class EstadiaControllerTest {
         verificacaoJson.extractingPath("$.totalElements").asNumber().isEqualTo(1);
 
         verify(estadiaService, times(1)).listarEstadia(eq(statusFalso), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 200 OK e o relatório de faturamento formatado")
+    public void relatorioFaturamentoCaso1(){
+
+        LocalDate inicioFalso = LocalDate.of(2026, 4, 1);
+        LocalDate fimFalso = LocalDate.of(2026, 4, 10);
+
+        DadosFaturamentoEstadiaDTO dtoFalso = new DadosFaturamentoEstadiaDTO(10L, new BigDecimal("500.00"));
+
+        when(estadiaService.obterRelatorioFaturamento(inicioFalso, fimFalso)).thenReturn(dtoFalso);
+
+        mockMvc.get().uri("/estadias/faturamento?inicio={inicioFalso}&fim={fimFalso}", inicioFalso, fimFalso)
+            .contentType(MediaType.APPLICATION_JSON)
+            .exchange()
+            .assertThat()
+            .hasStatusOk()
+            .bodyJson()
+            .convertTo(DadosFaturamentoEstadiaDTO.class)
+            .satisfies(dtoRetornado -> {
+                assertThat(dtoRetornado)
+                .usingRecursiveComparison()
+                .isEqualTo(dtoFalso);
+                }
+            );
+        
+      verify(estadiaService, times(1)).obterRelatorioFaturamento(inicioFalso, fimFalso);
+    }
+
+    @Test
+    @DisplayName("Deve retornar 400 Bad Request e a mensagem de erro quando datas forem inválidas")
+    public void relatorioFaturamentoCaso2(){
+
+        LocalDate inicioFalso = LocalDate.of(2026, 4, 10);
+        LocalDate fimFalso = LocalDate.of(2026, 4, 4);
+        String mensagemEx = "A data de fim não pode ser menor que a de início.";
+
+        when(estadiaService.obterRelatorioFaturamento(inicioFalso, fimFalso)).thenThrow(new ValidacaoDeDadosException(mensagemEx));
+
+        mockMvc.get().uri("/estadias/faturamento?inicio={inicioFalso}&fim={fimFalso}", inicioFalso, fimFalso)
+            .contentType(MediaType.APPLICATION_JSON)
+            .exchange()
+            .assertThat()
+            .hasStatus(HttpStatus.BAD_REQUEST)
+            .bodyJson()
+            .convertTo(RespostaDeErroDTO.class)
+                .satisfies(dtoRetornado -> {
+                    assertThat(dtoRetornado.status()).isEqualTo(400);
+                    assertThat(dtoRetornado.message()).isEqualTo(mensagemEx);
+                }
+            );
+
+        verify(estadiaService, times(1)).obterRelatorioFaturamento(inicioFalso, fimFalso);
     }
 }

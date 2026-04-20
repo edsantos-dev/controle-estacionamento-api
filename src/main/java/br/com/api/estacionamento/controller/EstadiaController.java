@@ -1,9 +1,12 @@
 package br.com.api.estacionamento.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +19,7 @@ import br.com.api.estacionamento.dto.DadosListagemEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosQuitacaoEstadiaDTO;
 import br.com.api.estacionamento.model.StatusEstadia;
 import br.com.api.estacionamento.dto.DadosEstadiaDTO;
+import br.com.api.estacionamento.dto.DadosFaturamentoEstadiaDTO;
 import br.com.api.estacionamento.service.EstadiaService;
 import jakarta.validation.Valid;
 
@@ -66,5 +70,15 @@ public class EstadiaController {
         var page = estadiaService.listarEstadia(status, paginacao);
 
         return ResponseEntity.ok(page);
-    } 
+    }
+
+    @GetMapping("/faturamento")
+    public ResponseEntity<DadosFaturamentoEstadiaDTO> relatorioFaturamento(
+        @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+        @RequestParam("fim") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+        
+        var relatorio = estadiaService.obterRelatorioFaturamento(inicio, fim);
+
+        return ResponseEntity.ok(relatorio);
+    }
 }
