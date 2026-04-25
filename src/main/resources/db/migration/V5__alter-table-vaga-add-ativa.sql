@@ -1,0 +1,1 @@
+alter table vaga add column ativa boolean default true not null;
