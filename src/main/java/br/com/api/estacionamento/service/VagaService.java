@@ -34,8 +34,12 @@ public class VagaService {
         return new DadosDetalhamentoVagaDTO(vaga);
     }
 
-    public List<DadosListagemVagaDTO> listarVagas(){
-        return vagaRepository.findAll().stream().map(DadosListagemVagaDTO::new).toList();
+    public List<DadosListagemVagaDTO> listarVagasAtivas(){
+        return vagaRepository.findAllByAtivaTrue().stream().map(DadosListagemVagaDTO::new).toList();
+    }
+
+    public List<DadosListagemVagaDTO> listarVagasInativas(){
+        return vagaRepository.findAllByAtivaFalse().stream().map(DadosListagemVagaDTO::new).toList();
     }
 
     public DadosDetalhamentoVagaDTO listarPorId (Long id) {

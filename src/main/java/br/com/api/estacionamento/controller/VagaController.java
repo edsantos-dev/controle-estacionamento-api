@@ -43,7 +43,7 @@ public class VagaController {
     @GetMapping
     public ResponseEntity<List<DadosListagemVagaDTO>> listarVaga() {
         
-        var listaVaga = vagaService.listarVagas();
+        var listaVaga = vagaService.listarVagasAtivas();
         
         return ResponseEntity.ok().body(listaVaga); 
     }
