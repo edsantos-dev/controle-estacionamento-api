@@ -56,6 +56,14 @@ public class VagaController {
         return ResponseEntity.ok(vaga);
     }
 
+    @GetMapping("/inativas")
+    public ResponseEntity<List<DadosListagemVagaDTO>> listarVagasInativas(){
+
+        var listaVagasInativas = vagaService.listarVagasInativas();
+
+        return ResponseEntity.ok(listaVagasInativas);
+    }
+
     @PatchMapping("/{id}/desativar")
     public ResponseEntity<DadosDetalhamentoVagaDTO> desativarVaga(@PathVariable Long id){
         
