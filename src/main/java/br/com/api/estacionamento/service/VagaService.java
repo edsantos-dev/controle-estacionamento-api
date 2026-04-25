@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoVagaDTO;
 import br.com.api.estacionamento.dto.DadosListagemVagaDTO;
@@ -12,16 +13,16 @@ import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
 import br.com.api.estacionamento.model.Vaga;
 import br.com.api.estacionamento.repository.VagaRepository;
-import jakarta.transaction.Transactional;
 import lombok.var;
 
 @Service
-@Transactional
+@Transactional (readOnly = true)
 public class VagaService {
 
     @Autowired
     private VagaRepository vagaRepository;
-    
+
+    @Transactional
     public DadosDetalhamentoVagaDTO salvarVaga(DadosVagaDTO dados) {
 
         if (vagaRepository.existsByNumero(dados.numero())) {
@@ -44,6 +45,7 @@ public class VagaService {
         return new DadosDetalhamentoVagaDTO(vagaId);
     }
 
+    @Transactional
     public void deletarVaga(Long id){
 
         var vaga = encontrarVaga(id);
