@@ -46,15 +46,23 @@ public class VagaService {
     }
 
     @Transactional
-    public void deletarVaga(Long id){
+    public void desativarVaga(Long id){
 
         var vaga = encontrarVaga(id);
 
         if(vaga.isOcupada()){
-            throw new RegraNegocioException("Não é possível deletar uma vaga que está ocupada.");
+            throw new RegraNegocioException("Não é possível desativar uma vaga que está ocupada.");
         }
 
-        vagaRepository.delete(vaga);
+        vaga.desativar();
+    }
+
+    @Transactional
+    public void ativarVaga(Long id){
+
+        var vaga = encontrarVaga(id);
+
+        vaga.ativar();
     }
 
     private Vaga encontrarVaga(Long id){
