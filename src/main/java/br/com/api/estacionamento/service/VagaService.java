@@ -46,7 +46,7 @@ public class VagaService {
     }
 
     @Transactional
-    public void desativarVaga(Long id){
+    public DadosDetalhamentoVagaDTO desativarVaga(Long id){
 
         var vaga = encontrarVaga(id);
 
@@ -55,14 +55,18 @@ public class VagaService {
         }
 
         vaga.desativar();
+
+        return new DadosDetalhamentoVagaDTO(vaga);
     }
 
     @Transactional
-    public void ativarVaga(Long id){
+    public DadosDetalhamentoVagaDTO ativarVaga(Long id){
 
         var vaga = encontrarVaga(id);
 
         vaga.ativar();
+
+        return new DadosDetalhamentoVagaDTO(vaga);
     }
 
     private Vaga encontrarVaga(Long id){

@@ -5,11 +5,12 @@ import br.com.api.estacionamento.model.Vaga;
 public record DadosDetalhamentoVagaDTO(
     Long id,
     int numero,
-    boolean ocupada
+    boolean ocupada,
+    boolean ativa
 ) {
 
     public DadosDetalhamentoVagaDTO(Vaga vaga) {
-        this(vaga.getId(), vaga.getNumero(), vaga.isOcupada());
+        this(vaga.getId(), vaga.getNumero(), vaga.isOcupada(), vaga.isAtiva());
     }
 
 }
