@@ -44,27 +44,6 @@ public class VagaService {
         return new DadosDetalhamentoVagaDTO(vagaId);
     }
 
-    public DadosDetalhamentoVagaDTO ocuparVaga(Long id){
-
-        var vaga = encontrarVaga(id);
-
-        vaga.ocupar();
-        vagaRepository.save(vaga);
-
-        return new DadosDetalhamentoVagaDTO(vaga);
-
-    }
-
-    public DadosDetalhamentoVagaDTO liberarVaga(Long id){
-
-        var vaga = encontrarVaga(id);
-
-        vaga.liberar();
-        vagaRepository.save(vaga);
-
-        return new DadosDetalhamentoVagaDTO(vaga);
-    }
-
     public void deletarVaga(Long id){
 
         var vaga = encontrarVaga(id);

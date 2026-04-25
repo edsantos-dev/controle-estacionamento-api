@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -53,22 +52,6 @@ public class VagaController {
     public ResponseEntity<DadosDetalhamentoVagaDTO> listarVagaPorId(@PathVariable long id) {
         
         var vaga = vagaService.listarPorId(id);
-
-        return ResponseEntity.ok(vaga);
-    }
-    
-    @PatchMapping("{id}/ocupar")
-    public ResponseEntity<DadosDetalhamentoVagaDTO> ocuparVaga(@PathVariable Long id){
-
-        var vaga = vagaService.ocuparVaga(id);
-
-        return ResponseEntity.ok(vaga);
-    }
-    
-    @PatchMapping("{id}/liberar")
-    public ResponseEntity<DadosDetalhamentoVagaDTO> liberarVaga(@PathVariable Long id){
-
-        var vaga = vagaService.liberarVaga(id);
 
         return ResponseEntity.ok(vaga);
     }
