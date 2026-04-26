@@ -28,13 +28,18 @@ public class Vaga {
     private Long id;
     private int numero;
     private boolean ocupada;
+    private boolean ativa;
 
     public Vaga(DadosVagaDTO dados) {
         this.numero = dados.numero();
         this.ocupada = false;
+        this.ativa = true;
     }
 
     public void ocupar(){
+        if(!estaAtiva()){
+            throw new RegraNegocioException("A vaga está desativada. Portanto, não é possível ocupar.");
+        }
         if(this.ocupada){
             throw new RegraNegocioException("Vaga já está ocupada.");
         }
@@ -43,11 +48,36 @@ public class Vaga {
     }
 
     public void liberar(){
+        if(!estaAtiva()){
+            throw new RegraNegocioException("A vaga está desativada. Portanto, não é possível liberar.");
+        }
         if(!this.ocupada){
             throw new RegraNegocioException("Vaga já está livre.");
         }
 
         this.ocupada = false;
+    }
+
+    public void desativar(){
+        
+        if(!this.ativa){
+            throw new RegraNegocioException("A vaga já está desativada.");
+        }
+
+        this.ativa = false;
+    }
+
+    public void ativar(){
+
+        if(this.ativa){
+            throw new RegraNegocioException("A vaga já está ativa.");
+        }
+
+        this.ativa = true;
+    }
+
+    private boolean estaAtiva(){
+        return this.ativa;
     }
 
 }

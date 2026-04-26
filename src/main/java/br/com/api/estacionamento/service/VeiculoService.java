@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.api.estacionamento.dto.DadosDetalhamentoVeiculoDTO;
 import br.com.api.estacionamento.dto.DadosEdicaoVeiculoDTO;
@@ -12,15 +13,15 @@ import br.com.api.estacionamento.exception.RecursoNaoEncontradoException;
 import br.com.api.estacionamento.exception.RegraNegocioException;
 import br.com.api.estacionamento.model.Veiculo;
 import br.com.api.estacionamento.repository.VeiculoRepository;
-import jakarta.transaction.Transactional;
 
 @Service
-@Transactional
+@Transactional (readOnly = true)
 public class VeiculoService {
 
     @Autowired
     private VeiculoRepository veiculoRepository;
 
+    @Transactional
     public DadosDetalhamentoVeiculoDTO cadastrarVeiculo(DadosVeiculoDTO dados){
 
         if(veiculoRepository.existsByPlaca(dados.placa().trim().toUpperCase())){
@@ -45,12 +46,12 @@ public class VeiculoService {
 
     }
 
+    @Transactional
     public DadosDetalhamentoVeiculoDTO editarVeiculo(Long id, DadosEdicaoVeiculoDTO dados){
 
         var veiculo = encontrarVeiculo(id);
 
         veiculo.setTipo(dados.tipo());
-        veiculoRepository.save(veiculo);
 
         return new DadosDetalhamentoVeiculoDTO(veiculo);
     }

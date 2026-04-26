@@ -44,35 +44,38 @@ O projeto segue uma arquitetura em camadas bem definida, separando responsabilid
 ### Vaga
 
   * Cadastrar vaga
-  * Listar todas as vagas
+  * Listar as vagas ativas
+  * Listar as vagas inativas (histórico)
   * Buscar vaga por ID
   * Ocupar vaga
   * Liberar vaga
-  * Remover vaga (apenas se estiver livre)
+  * Desativar e ativar vaga (soft delete)
 
 
   ### Regras de Negócio (Vaga)
 
   * O número da vaga é único.
-  * Toda vaga é criada como **livre**.
+  * Toda vaga é criada como **livre** e **ativa**.
+  * O sistema utiliza exclusão lógica (Soft Delete). Vagas desativadas não são apagadas do banco, garantindo a integridade do histórico financeiro e operacional.
   * Não é permitido:
 
     * Cadastrar duas vagas com o mesmo número.
     * Ocupar uma vaga já ocupada.
     * Liberar uma vaga já livre.
-    * Remover uma vaga que esteja ocupada.
+    * Desativar uma vaga que esteja ocupada.
+    * Ocupar ou liberar uma vaga que esteja inativa.
 
 
   ### Endpoints – Vaga
 
-  | Método | Endpoint            | Descrição                 |
-  | ------ | ------------------- | ------------------------- |
-  | POST   | /vagas              | Cadastra uma nova vaga    |
-  | GET    | /vagas              | Lista todas as vagas      |
-  | GET    | /vagas/{id}         | Busca vaga por ID         |
-  | PATCH  | /vagas/{id}/ocupar  | Marca a vaga como ocupada |
-  | PATCH  | /vagas/{id}/liberar | Marca a vaga como livre   |
-  | DELETE | /vagas/{id}         | Remove uma vaga livre     |
+  | Método | Endpoint               | Descrição                       |
+  | ------ | ---------------------- | ------------------------------- |
+  | POST   | /vagas                 | Cadastra uma nova vaga          |
+  | GET    | /vagas                 | Lista todas as vagas ativas     |
+  | GET    | /vagas/inativas        | Lista todas as vagas inativas   |
+  | GET    | /vagas/{id}            | Busca vaga por ID               |
+  | PATCH  | /vagas/{id}/desativar  | Desativa a vaga (soft delete)   |
+  | PATCH  | /vagas/{id}/ativar     | Reativa uma vaga inativa        |
 
 ### Veículo
 
@@ -223,5 +226,4 @@ mvn spring-boot:run
 
 * Implementação de Segurança (Spring Security + JWT) para controle de acesso.
 * Geração de documentação automatizada via OpenAPI/Swagger.
-* Implementação de exclusão lógica (Soft Delete) para manter rastreabilidade e auditoria no banco de dados.
 

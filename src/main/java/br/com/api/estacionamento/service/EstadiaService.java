@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.api.estacionamento.dto.DadosIniciacaoEstadiaDTO;
 import br.com.api.estacionamento.dto.DadosGeracaoDeCobrancaEstadiaDTO;
@@ -24,10 +25,9 @@ import br.com.api.estacionamento.model.Veiculo;
 import br.com.api.estacionamento.repository.EstadiaRepository;
 import br.com.api.estacionamento.repository.VagaRepository;
 import br.com.api.estacionamento.repository.VeiculoRepository;
-import jakarta.transaction.Transactional;
 
 @Service
-@Transactional
+@Transactional (readOnly = true)
 public class EstadiaService {
 
     @Autowired
@@ -39,6 +39,7 @@ public class EstadiaService {
     @Autowired
     private EstadiaRepository estadiaRepository;
 
+    @Transactional
     public DadosIniciacaoEstadiaDTO iniciarEstadia(DadosEstadiaDTO dados){
 
         Vaga vaga = vagaRepository.findById(dados.idVaga())
@@ -52,13 +53,13 @@ public class EstadiaService {
         }
 
         vaga.ocupar();
-        vagaRepository.save(vaga);
 
         Estadia estadia = estadiaRepository.save(new Estadia(vaga, veiculo));
 
         return new DadosIniciacaoEstadiaDTO(estadia);
     }
 
+    @Transactional
     public DadosGeracaoDeCobrancaEstadiaDTO gerarCobranca(Long id){
 
         Estadia estadia = encontrarEstadia(id);
@@ -68,6 +69,7 @@ public class EstadiaService {
         return new DadosGeracaoDeCobrancaEstadiaDTO(estadia);
     }
 
+    @Transactional
     public DadosQuitacaoEstadiaDTO quitarEstadia(Long id){
 
         Estadia estadia = encontrarEstadia(id);

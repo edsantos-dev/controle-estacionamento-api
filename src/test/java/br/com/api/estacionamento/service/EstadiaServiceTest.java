@@ -67,7 +67,7 @@ public class EstadiaServiceTest {
         
         Long idEstadia = 1L;
 
-        Vaga vagaFalsa = new Vaga(1L, 1, false);
+        Vaga vagaFalsa = new Vaga(1L, 1, false, true);
         Veiculo veiculoFalso = new Veiculo(1L, "AKY0U876", Tipo.CARRO);
 
         Estadia estadiaFalsa = new Estadia(vagaFalsa, veiculoFalso);
